@@ -15,7 +15,7 @@
   --maru:"Hiragino Maru Gothic ProN","ヒラギノ丸ゴ ProN W4","Yu Gothic Medium","游ゴシック Medium","YuGothic",sans-serif;
 }
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
-html,body{margin:0;padding:0}
+html,body{margin:0;padding:0;max-width:100%;overflow-x:hidden}
 body{font-family:var(--maru);color:var(--ink);font-size:14px;
   background:linear-gradient(180deg,var(--bg) 0%,var(--bg2) 100%) fixed;
   height:100vh;height:100svh;display:flex;flex-direction:column;overflow:hidden;padding:0}
@@ -28,15 +28,16 @@ h1{font-size:14px;margin:0;letter-spacing:.02em;font-weight:600;color:var(--pink
   border:1.5px solid var(--pinkL);background:#fff;color:var(--pinkD);font-size:13.5px;font-weight:600;cursor:pointer}
 .ico{font-family:var(--maru);width:31px;height:31px;border-radius:50%;border:1px solid var(--line);
   background:#fff;color:var(--ink2);font-size:15px;cursor:pointer;flex:none}
-main{flex:1;min-height:0;overflow-y:auto;-webkit-overflow-scrolling:touch;
-  padding:9px 12px 16px;width:100%;max-width:560px;margin:0 auto}
+main{flex:1;min-width:0;min-height:0;overflow-y:auto;overflow-x:hidden;-webkit-overflow-scrolling:touch;
+  padding:9px 10px 16px;width:100%;max-width:560px;margin:0 auto}
 .card{background:var(--card);border:1px solid var(--line);border-radius:13px;padding:9px 10px;
-  margin:0 0 7px;box-shadow:0 2px 10px rgba(200,140,170,.10)}
+  margin:0 0 7px;max-width:100%;overflow:hidden;box-shadow:0 2px 10px rgba(200,140,170,.10)}
 .card.hi{border-color:var(--pinkL);background:linear-gradient(180deg,#fff,var(--pinkXL))}
 .card.win{border-color:var(--mintL);background:linear-gradient(180deg,#fff,var(--mintXL))}
-.card h3{margin:0 0 6px;font-size:11.5px;letter-spacing:.09em;color:var(--pinkD);font-weight:600;
-  display:flex;align-items:center;gap:6px}
-.card h3 em{font-style:normal;color:var(--ink2);font-weight:400;letter-spacing:0;font-size:10.5px;margin-left:auto}
+.card h3{margin:0 0 6px;font-size:11.5px;letter-spacing:.06em;color:var(--pinkD);font-weight:600;
+  display:flex;align-items:baseline;gap:6px;min-width:0;white-space:nowrap}
+.card h3 em{font-style:normal;color:var(--ink2);font-weight:400;letter-spacing:0;font-size:10.5px;
+  margin-left:auto;min-width:0;overflow:hidden;text-overflow:ellipsis}
 
 .tile{font-family:var(--maru);display:inline-flex;align-items:center;justify-content:center;
   background:linear-gradient(180deg,#fff,#FFF3F7);color:var(--ink);border:1px solid #F5CEDF;border-radius:8px;
@@ -45,7 +46,7 @@ main{flex:1;min-height:0;overflow-y:auto;-webkit-overflow-scrolling:touch;
 .tile.gray{background:#F4EFF2;color:#BCACB6;border-color:#EBE0E7;box-shadow:none}
 
 /* てはい */
-.rack{display:flex;flex-wrap:wrap;gap:5px;align-items:flex-start}
+.rack{display:flex;flex-wrap:wrap;gap:5px;align-items:flex-start;max-width:100%}
 .rack .tile{width:29px;height:38px;font-size:19px}
 .rack .ph{width:29px;height:38px;border-radius:8px;border:1.5px dashed var(--pinkL);background:rgba(255,255,255,.5)}
 .grpw{display:flex;flex-direction:column;align-items:center;gap:1px}
@@ -59,20 +60,22 @@ main{flex:1;min-height:0;overflow-y:auto;-webkit-overflow-scrolling:touch;
 
 .bar{height:7px;border-radius:4px;background:var(--pinkXL);overflow:hidden;margin:8px 0 5px}
 .bar i{display:block;height:100%;background:linear-gradient(90deg,var(--pinkL),var(--pink));border-radius:5px;transition:width .3s}
-.meta{font-size:11.5px;color:var(--ink2);line-height:1.6;margin:5px 0 0}
+.meta{font-size:11.5px;color:var(--ink2);line-height:1.6;margin:5px 0 0;overflow-wrap:anywhere}
 .meta b{color:var(--pinkD);font-weight:600}
 
 /* こうほ（コンパクト） */
-.cands{display:flex;flex-wrap:wrap;gap:5px}
+.cands{display:flex;flex-wrap:wrap;gap:5px;max-width:100%}
 .cand{font-family:var(--maru);padding:6px 11px;border-radius:999px;background:#fff;
   border:1.5px solid var(--pinkL);color:var(--ink);font-size:14.5px;letter-spacing:.04em;cursor:pointer;
   display:inline-flex;align-items:baseline;gap:1px}
 .cand.rec{background:var(--mintXL);border-color:var(--mintL)}
 .cand.nomean{color:var(--ink2)}
 .cand u{text-decoration:none;font-size:9.5px;color:var(--pinkL);margin-left:3px}
-.cand b{color:var(--pink);font-weight:700}
+.cand b{color:var(--pink);font-weight:700;background:var(--pinkXL);border-radius:4px;padding:0 2px}
 .cand i{font-style:normal;font-size:9.5px;color:var(--ink2);margin-left:5px;letter-spacing:0;opacity:.85}
 .cand.willwin{background:var(--mintXL);border-color:var(--mint)}
+.more{font-family:var(--maru);display:block;width:100%;margin:9px 0 0;padding:8px;border-radius:9px;
+  border:1px solid var(--line);background:var(--pinkXL);color:var(--pinkD);font-size:11.5px;font-weight:600;cursor:pointer}
 .sub2{font-size:10px;letter-spacing:.1em;color:var(--ink2);margin:8px 0 4px}
 .sub2:first-of-type{margin-top:2px}
 .tin{font-family:var(--maru);width:100%;padding:12px;border-radius:13px;border:1.5px solid var(--pinkL);font-size:15px;color:var(--ink);background:#fff}
@@ -91,7 +94,7 @@ main{flex:1;min-height:0;overflow-y:auto;-webkit-overflow-scrolling:touch;
 .strip{display:flex;flex-wrap:wrap;gap:3px}
 .strip .tile{width:22px;height:29px;font-size:14px}
 
-.foot{flex:none;z-index:20;padding:8px 12px calc(8px + env(safe-area-inset-bottom));
+.foot{flex:none;min-width:0;z-index:20;padding:8px 10px calc(8px + env(safe-area-inset-bottom));
   background:rgba(255,255,255,.96);border-top:1px solid var(--line);
   display:flex;gap:7px;width:100%;max-width:560px;margin:0 auto}
 .foot button{font-family:var(--maru);flex:1;padding:12px 5px;border-radius:12px;border:none;
@@ -140,7 +143,7 @@ main{flex:1;min-height:0;overflow-y:auto;-webkit-overflow-scrolling:touch;
 <body>
 <header>
   <h1>ひらがじゃん たすけ</h1>
-  <span class="ver">v1.0</span>
+  <span class="ver">v1.1</span>
   <button class="ico" id="book" title="ずかん">📖</button>
 </header>
 <main id="app"></main>
@@ -10835,7 +10838,7 @@ const KB_DAK=[["ば","だ","ざ","が"],["び","ぢ","じ","ぎ"],["ぶ","づ","
 const KB_SML=[["ゃ","ゅ","ょ","っ","ー"]];
 
 /* ===== じょうたい ===== */
-let phase="setup", hand=[], keeps=[], seen=[], kbmode="main", ana=null;
+let phase="setup", hand=[], keeps=[], seen=[], kbmode="main", ana=null, expand=false;
 const LSG="hiragajong_game";
 function saveGame(){try{localStorage.setItem(LSG,JSON.stringify({phase,hand,keeps,seen}))}catch(e){}}
 function loadGame(){try{const g=JSON.parse(localStorage.getItem(LSG)||"null");
@@ -11122,7 +11125,7 @@ function renderPlay(app){
     const {s2,s3}=slots();
     const c2=el("div","card");
     const h2=el("h3",null,"ことば");
-    h2.appendChild(el("em",null,`いま ${ana.make.length}こ ／ あと1まいで ${ana.nextTotal}こ`));
+    h2.appendChild(el("em",null,`いま ${ana.make.length} ／ あと1まい ${ana.nextTotal}`));
     c2.appendChild(h2);
     const mark=(b,w)=>{ if(!hasMean(w))b.appendChild(el("u",null,"?")); return b };
     const pill=w=>{const b=el("button","cand"+(ana.rec.has(w)?" rec":"")+(hasMean(w)?"":" nomean"),w);
@@ -11152,15 +11155,19 @@ function renderPlay(app){
     }
 
     const oth3=ana.nexts3.filter(o=>!o.win), oth2=ana.nexts2.filter(o=>!o.win);
-    if(s3) group("いま つくれる（3もじ）", ana.make3.slice(0,16).map(pill));
-    if(s2) group("いま つくれる（2もじ）", ana.make2.slice(0,8).map(pill));
+    const L=(a,b)=>expand?a:b;
+    if(s3) group("いま つくれる（3もじ）", ana.make3.slice(0,L(18,5)).map(pill));
+    if(s2) group("いま つくれる（2もじ）", ana.make2.slice(0,L(10,4)).map(pill));
     if(s3){
-      group("あと 1まいで（3もじ）", oth3.map(npill));
-      if(ana.fars.length && !ana.winTiles.length) group("あと 2まいで（3もじ）", ana.fars.map(npill));
+      group("あと 1まいで（3もじ）", oth3.slice(0,L(21,6)).map(npill));
+      if(ana.fars.length && !ana.winTiles.length) group("あと 2まいで（3もじ）", ana.fars.slice(0,L(12,5)).map(npill));
     }
-    if(s2) group("あと 1まいで（2もじ）", oth2.slice(0,8).map(npill));
+    if(s2) group("あと 1まいで（2もじ）", oth2.slice(0,L(8,4)).map(npill));
     if(!c2.querySelector(".cands"))
       c2.appendChild(el("p","meta","いま みえる ことばが ないよ。きめた ことばを くずすと べつの みちが みつかるかも。"));
+    const more=el("button","more", expand?"すくなく みる":"もっと みる");
+    more.onclick=()=>{expand=!expand;render()};
+    c2.appendChild(more);
     c2.appendChild(el("p","meta","タップで いみが みられるよ。みどり＝のこすと よい ことば、ピンクの もじ＝まだ もって いない はい、? ＝ずかんに まだ ない ことば。"));
     app.appendChild(c2);
   }
