@@ -68,7 +68,8 @@ main{flex:1;min-height:0;overflow-y:auto;-webkit-overflow-scrolling:touch;
   border:1.5px solid var(--pinkL);color:var(--ink);font-size:14.5px;letter-spacing:.04em;cursor:pointer;
   display:inline-flex;align-items:baseline;gap:1px}
 .cand.rec{background:var(--mintXL);border-color:var(--mintL)}
-.cand.nomean{color:var(--ink2);border-style:dashed}
+.cand.nomean{color:var(--ink2)}
+.cand u{text-decoration:none;font-size:9.5px;color:var(--pinkL);margin-left:3px}
 .cand b{color:var(--pink);font-weight:700}
 .cand i{font-style:normal;font-size:9.5px;color:var(--ink2);margin-left:5px;letter-spacing:0;opacity:.85}
 .cand.willwin{background:var(--mintXL);border-color:var(--mint)}
@@ -78,10 +79,10 @@ main{flex:1;min-height:0;overflow-y:auto;-webkit-overflow-scrolling:touch;
 .cand:active{transform:translateY(1px)}
 
 .wait{display:flex;flex-wrap:wrap;gap:6px}
-.w1{display:flex;flex-direction:column;align-items:center;gap:2px;padding:4px 5px 3px;border-radius:9px;
-  background:var(--pinkXL);border:1px solid var(--line);cursor:pointer}
-.w1 .tile{width:29px;height:38px;font-size:19px;pointer-events:none}
-.w1 .cnt{font-size:9.5px;color:var(--pinkD);white-space:nowrap}
+.w1{display:flex;flex-direction:column;align-items:center;gap:2px;padding:4px 6px 3px;border-radius:9px;
+  background:var(--mintXL);border:1.5px solid var(--mintL);cursor:pointer}
+.w1 .tile{width:30px;height:39px;font-size:20px;pointer-events:none}
+.w1 .cnt{font-size:9.5px;color:var(--mint);font-weight:600;white-space:nowrap}
 .w1.top{background:var(--mintXL);border-color:var(--mintL)}
 .w1.top .cnt{color:var(--mint);font-weight:600}
 .info{margin-top:8px;padding:9px 11px;border-radius:10px;background:var(--pinkXL);
@@ -139,7 +140,7 @@ main{flex:1;min-height:0;overflow-y:auto;-webkit-overflow-scrolling:touch;
 <body>
 <header>
   <h1>ひらがじゃん たすけ</h1>
-  <span class="ver">v0.9</span>
+  <span class="ver">v1.0</span>
   <button class="ico" id="book" title="ずかん">📖</button>
 </header>
 <main id="app"></main>
@@ -10924,7 +10925,8 @@ function analyze(){
       .sort((a,b)=>(hasMean(b.w)-hasMean(a.w))||(b.rest-a.rest)||(GRD[a.w]-GRD[b.w]))
       .slice(0,12);
   }
-  return{N,cover:cv,agari,make,make3,make2,rec,wants,nexts3,nexts2,nextTotal,fars};
+  const winTiles=wants.filter(o=>o.win);
+  return{N,cover:cv,agari,make,make3,make2,rec,wants,nexts3,nexts2,nextTotal,fars,winTiles};
 }
 function ponFor(c){
   const out=[],p={...cnt(hand)};p[c]=(p[c]||0)+1;
@@ -10990,6 +10992,23 @@ function wordSheet(w,kind,idx,nx){
   a.appendChild(t);a.appendChild(sv);
   const c=el("button","a3","とじる");c.onclick=close;a.appendChild(c);
   s.appendChild(a);open_();
+}
+function winSheet(o){
+  const s=sheetHead("この はいが くれば あがり！","やまと みんなの てに のこり "+o.rest+"まい");
+  const bw=el("div","bigword"); bw.appendChild(tileEl(o.c)); s.appendChild(bw);
+  const a=el("div","acts");
+  o.words.forEach(w=>{
+    const b=el("button","cand"+(hasMean(w)?"":" nomean"));
+    let used=false;
+    for(const ch of w){ if(ch===o.c&&!used){used=true;b.appendChild(el("b",null,ch))}
+      else b.appendChild(document.createTextNode(ch)) }
+    b.style.width="100%"; b.style.justifyContent="center";
+    b.onclick=()=>{const m=s.querySelector(".mn")||el("div","info mn");m.className="info mn";
+      m.innerHTML=`<span class="w">${w}</span>　${hasMean(w)?meaning(w):"まだ ずかんに ないよ"}`;s.appendChild(m)};
+    a.appendChild(b);
+  });
+  const c=el("button","a3","とじる"); c.onclick=close; a.appendChild(c);
+  s.appendChild(a); open_();
 }
 function pickSheet(title,sub,pick){
   const s=sheetHead(title,sub);
@@ -11105,43 +11124,44 @@ function renderPlay(app){
     const h2=el("h3",null,"ことば");
     h2.appendChild(el("em",null,`いま ${ana.make.length}こ ／ あと1まいで ${ana.nextTotal}こ`));
     c2.appendChild(h2);
+    const mark=(b,w)=>{ if(!hasMean(w))b.appendChild(el("u",null,"?")); return b };
     const pill=w=>{const b=el("button","cand"+(ana.rec.has(w)?" rec":"")+(hasMean(w)?"":" nomean"),w);
-      b.onclick=()=>wordSheet(w,null,-1);return b};
-    const npill=o=>{const b=el("button","cand"+(o.win?" willwin":"")+(hasMean(o.w)?"":" nomean"));
-      let used=false;
-      for(const ch of o.w){ if(ch===o.c&&!used){used=true;b.appendChild(el("b",null,ch))}
+      mark(b,w); b.onclick=()=>wordSheet(w,null,-1); return b};
+    const npill=o=>{const b=el("button","cand"+(hasMean(o.w)?"":" nomean"));
+      const need={}; (o.ms||[o.c]).forEach(ch=>need[ch]=(need[ch]||0)+1);
+      for(const ch of o.w){ if(need[ch]>0){need[ch]--;b.appendChild(el("b",null,ch))}
         else b.appendChild(document.createTextNode(ch)) }
-      b.appendChild(el("i",null,o.win?"あがり":"のこり"+o.rest));
-      b.onclick=()=>wordSheet(o.w,null,-1,o); return b};
-    const group=(label,nodes)=>{
-      if(!nodes.length)return;
+      b.appendChild(el("i",null,"のこり"+o.rest)); mark(b,o.w);
+      b.onclick=()=>wordSheet(o.w,null,-1,o.ms?{c:o.ms.join("と"),rest:o.rest,two:true}:o);
+      return b};
+    const group=(label,nodes)=>{ if(!nodes.length)return;
       c2.appendChild(el("div","sub2",label));
-      const cs=el("div","cands"); nodes.forEach(n=>cs.appendChild(n)); c2.appendChild(cs);
-    };
-    const win3=ana.nexts3.filter(o=>o.win), oth3=ana.nexts3.filter(o=>!o.win);
-    const win2=ana.nexts2.filter(o=>o.win), oth2=ana.nexts2.filter(o=>!o.win);
-    group("これが くれば あがり！", win3.concat(win2).map(npill));
+      const cs=el("div","cands"); nodes.forEach(n=>cs.appendChild(n)); c2.appendChild(cs) };
+
+    /* あがり：ことばでは なく「まちの はい」を ならべる */
+    if(ana.winTiles.length){
+      c2.appendChild(el("div","sub2","この はいが くれば あがり！"));
+      const w=el("div","wait");
+      ana.winTiles.forEach(o=>{
+        const dd=el("div","w1");
+        dd.appendChild(tileEl(o.c));
+        dd.appendChild(el("span","cnt","のこり"+o.rest));
+        dd.onclick=()=>winSheet(o);
+        w.appendChild(dd)});
+      c2.appendChild(w);
+    }
+
+    const oth3=ana.nexts3.filter(o=>!o.win), oth2=ana.nexts2.filter(o=>!o.win);
+    if(s3) group("いま つくれる（3もじ）", ana.make3.slice(0,16).map(pill));
+    if(s2) group("いま つくれる（2もじ）", ana.make2.slice(0,8).map(pill));
     if(s3){
-      group("いま つくれる（3もじ）", ana.make3.slice(0,16).map(pill));
-      group("あと 1まいで できる（3もじ）", oth3.map(npill));
-      if(ana.fars.length){
-        const fp=o=>{const b=el("button","cand"+(hasMean(o.w)?"":" nomean"));
-          const need={}; o.ms.forEach(ch=>need[ch]=(need[ch]||0)+1);
-          for(const ch of o.w){ if(need[ch]>0){need[ch]--;b.appendChild(el("b",null,ch))}
-            else b.appendChild(document.createTextNode(ch)) }
-          b.appendChild(el("i",null,"のこり"+o.rest));
-          b.onclick=()=>wordSheet(o.w,null,-1,{c:o.ms.join("と"),rest:o.rest,win:false,two:true});
-          return b};
-        group("あと 2まいで できる（3もじ）", ana.fars.map(fp));
-      }
-      if(!ana.make3.length && !oth3.length && !ana.fars.length)
-        c2.appendChild(el("p","meta","3もじの ことばが まだ みえないよ。"));
+      group("あと 1まいで（3もじ）", oth3.map(npill));
+      if(ana.fars.length && !ana.winTiles.length) group("あと 2まいで（3もじ）", ana.fars.map(npill));
     }
-    if(s2){
-      const two=ana.make2.slice(0,6).map(pill).concat(oth2.slice(0,8).map(npill));
-      group("2もじ（さいごの 1くみ）", two);
-    }
-    c2.appendChild(el("p","meta","タップで いみが みられるよ。みどりは のこすと よい ことば、ピンクの もじは まだ もって いない はい。"));
+    if(s2) group("あと 1まいで（2もじ）", oth2.slice(0,8).map(npill));
+    if(!c2.querySelector(".cands"))
+      c2.appendChild(el("p","meta","いま みえる ことばが ないよ。きめた ことばを くずすと べつの みちが みつかるかも。"));
+    c2.appendChild(el("p","meta","タップで いみが みられるよ。みどり＝のこすと よい ことば、ピンクの もじ＝まだ もって いない はい、? ＝ずかんに まだ ない ことば。"));
     app.appendChild(c2);
   }
 
