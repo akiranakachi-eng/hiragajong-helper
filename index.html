@@ -11070,7 +11070,7 @@ function renderSetup(app){
 }
 
 function renderPlay(app){
-  const N=ana.N, extra=hand.length>N-1;
+  const N=ana.N, extra=(hand.length>N-1 && !ana.agari);
 
   if(ana.agari){
     const c=el("div","card win");
@@ -11196,6 +11196,8 @@ function renderFoot(){
     const b=el("button","b1","ツモった");
     b.onclick=()=>pickSheet("ひいた はいは？","1つ えらんでね",ch=>{hand.push(ch);close();render()});
     f.appendChild(b);
+  }else if(ana.agari){
+    const b=el("button","b1","あがり！ おめでとう 🎉");b.disabled=true;f.appendChild(b);
   }else{
     const b=el("button","b1","すてる はいを タップ");b.disabled=true;f.appendChild(b);
   }
