@@ -18,7 +18,7 @@
 html,body{margin:0;padding:0}
 body{font-family:var(--maru);color:var(--ink);font-size:15px;
   background:linear-gradient(180deg,var(--bg) 0%,var(--bg2) 100%) fixed;
-  min-height:100dvh;padding:0 0 92px;font-size:15px}
+  min-height:100dvh;padding:0 0 108px;font-size:15px}
 header{display:flex;align-items:center;gap:9px;padding:8px 14px;background:rgba(255,255,255,.93);
   backdrop-filter:blur(8px);border-bottom:1px solid var(--line);position:sticky;top:0;z-index:20}
 h1{font-size:15px;margin:0;letter-spacing:.05em;font-weight:600;color:var(--pinkD)}
@@ -88,7 +88,7 @@ main{padding:0 13px;max-width:560px;margin:0 auto}
 .strip{display:flex;flex-wrap:wrap;gap:3px}
 .strip .tile{width:24px;height:32px;font-size:15px}
 
-.foot{position:fixed;left:0;right:0;bottom:0;z-index:20;
+.foot{position:fixed;left:0;right:0;bottom:var(--vvb,0px);z-index:20;
   padding:9px 13px calc(9px + env(safe-area-inset-bottom));background:rgba(255,255,255,.95);
   backdrop-filter:blur(8px);border-top:1px solid var(--line);display:flex;gap:8px;max-width:560px;margin:0 auto}
 .foot button{font-family:var(--maru);flex:1;padding:14px 6px;border-radius:13px;border:none;
@@ -99,7 +99,7 @@ main{padding:0 13px;max-width:560px;margin:0 auto}
 
 .veil{position:fixed;inset:0;background:rgba(75,55,66,.42);z-index:40;opacity:0;pointer-events:none;transition:opacity .18s}
 .veil.on{opacity:1;pointer-events:auto}
-.sheet{position:fixed;left:0;right:0;bottom:0;z-index:50;background:var(--card);border-radius:20px 20px 0 0;
+.sheet{position:fixed;left:0;right:0;bottom:var(--vvb,0px);z-index:50;background:var(--card);border-radius:20px 20px 0 0;
   padding:13px 14px calc(16px + env(safe-area-inset-bottom));transform:translateY(102%);transition:transform .22s ease;
   max-width:560px;margin:0 auto;max-height:88dvh;overflow-y:auto;box-shadow:0 -6px 24px rgba(160,100,130,.2)}
 .sheet.on{transform:translateY(0)}
@@ -137,7 +137,7 @@ main{padding:0 13px;max-width:560px;margin:0 auto}
 <body>
 <header>
   <h1>ひらがじゃん たすけ</h1>
-  <span class="ver">v0.7</span>
+  <span class="ver">v0.8</span>
   <button class="ico" id="book" title="ずかん">📖</button>
   <button class="newg" id="reset">あたらしい ゲーム</button>
 </header>
@@ -10873,13 +10873,16 @@ function analyze(){
   const cv=cover(ps,s2,s3,pick(f2,CAP2),pick(f3,CAP3));
   const agari=(hand.length===N&&cv.cov===N);
   const rec=new Set(cv.words);
-  const make=[...f3,...f2].sort((a,b)=>(rec.has(b)-rec.has(a))||(hasMean(b)-hasMean(a))||(GRD[a]-GRD[b]));
+  const ord=(a,b)=>(rec.has(b)-rec.has(a))||(hasMean(b)-hasMean(a))||(GRD[a]-GRD[b]);
+  const make3=f3.slice().sort(ord), make2=f2.slice().sort(ord);
+  const make=[...make3,...make2];
   /* あと1もじで とどく ことば → ほしい はい */
-  const near={};
+  const near={}, far=[];
   for(const L of [2,3]){ if(L===2&&!s2)continue; if(L===3&&!s3)continue;
-    for(const w of BYLEN[L]){const c=CNT[w];let miss=null,n=0;
-      for(const ch in c){const d=c[ch]-(pool[ch]||0);if(d>0){n+=d;miss=ch;if(n>1)break}}
-      if(n===1)(near[miss]=near[miss]||[]).push(w)}}
+    for(const w of BYLEN[L]){const c=CNT[w];const ms=[];let n=0;
+      for(const ch in c){const d=c[ch]-(pool[ch]||0);if(d>0){n+=d;for(let i=0;i<d;i++)ms.push(ch);if(n>2)break}}
+      if(n===1)(near[ms[0]]=near[ms[0]]||[]).push(w);
+      else if(n===2&&L===3)far.push({w,ms})}}
   const wants=[],seenAll=cnt(hand.concat(seen,...keeps.map(k=>[...k.w])));
   const last=(hand.length+1===N);
   for(const c in near){
@@ -10895,18 +10898,32 @@ function analyze(){
   /* いろんな はいが ならぶように、1もじずつ かわりばんこで あつめる */
   const per=wants.map(o=>({o,ws:(near[o.c]||[]).slice()
     .sort((a,b)=>(hasMean(b)-hasMean(a))||(GRD[a]-GRD[b]))}));
-  const nexts=[]; let nextTotal=0;
-  for(const p of per) nextTotal+=p.ws.length;
-  for(let i=0,go=true;go&&nexts.length<28;i++){
-    go=false;
-    for(const p of per){
-      if(!p.ws[i])continue;
-      nexts.push({w:p.ws[i],c:p.o.c,rest:p.o.rest,win:p.o.win}); go=true;
-      if(nexts.length>=28)break;
+  let nextTotal=0; for(const p of per) nextTotal+=p.ws.length;
+  const roll=(len,cap)=>{
+    const out=[];
+    for(let i=0,go=true;go&&out.length<cap;i++){
+      go=false;
+      for(const p of per){
+        const ws=p.ws.filter(w=>w.length===len);
+        if(!ws[i])continue;
+        out.push({w:ws[i],c:p.o.c,rest:p.o.rest,win:p.o.win}); go=true;
+        if(out.length>=cap)break;
+      }
     }
+    return out.sort((a,b)=>b.win-a.win);
+  };
+  const nexts3=roll(3,21), nexts2=roll(2,8);
+  let fars=[];
+  if(s3 && nexts3.length<8){
+    const seenAll2=seenAll;
+    fars=far.map(o=>{
+      const r=o.ms.map(ch=>INV[ch]-(seenAll2[ch]||0));
+      return {w:o.w,ms:o.ms,rest:Math.min(...r)};
+    }).filter(o=>o.rest>0)
+      .sort((a,b)=>(hasMean(b.w)-hasMean(a.w))||(b.rest-a.rest)||(GRD[a.w]-GRD[b.w]))
+      .slice(0,12);
   }
-  nexts.sort((a,b)=>b.win-a.win);
-  return{N,cover:cv,agari,make,rec,wants,nexts,nextTotal};
+  return{N,cover:cv,agari,make,make3,make2,rec,wants,nexts3,nexts2,nextTotal,fars};
 }
 function ponFor(c){
   const out=[],p={...cnt(hand)};p[c]=(p[c]||0)+1;
@@ -10935,7 +10952,7 @@ function sheetHead(title,sub){
 
 /* ===== シート ===== */
 function wordSheet(w,kind,idx,nx){
-  const s=sheetHead(kind?"きめた ことば":nx?"あと 1まいで できる":"この ことばに する？");
+  const s=sheetHead(kind?"きめた ことば":nx?(nx.two?"あと 2まいで できる":"あと 1まいで できる"):"この ことばに する？");
   s.appendChild(bigWord(w));
   const m=el("div","info");
   if(hasMean(w)) m.innerHTML=`<span class="w">いみ</span>　${meaning(w)}`;
@@ -10945,7 +10962,9 @@ function wordSheet(w,kind,idx,nx){
     const n=el("div","info");
     n.innerHTML=nx.win
       ? `<span class="w">${nx.c}</span>　これが くれば <b>あがり</b>！ やまと みんなの てに のこり <b>${nx.rest}まい</b>`
-      : `<span class="w">${nx.c}</span>　この はいが くれば つくれるよ。やまと みんなの てに のこり <b>${nx.rest}まい</b>`;
+      : nx.two
+        ? `<span class="w">${nx.c}</span>　この 2まいが くれば つくれるよ。すくない ほうで のこり <b>${nx.rest}まい</b>`
+        : `<span class="w">${nx.c}</span>　この はいが くれば つくれるよ。やまと みんなの てに のこり <b>${nx.rest}まい</b>`;
     s.appendChild(n);
   }
   const a=el("div","acts");
@@ -11080,36 +11099,46 @@ function renderPlay(app){
   app.appendChild(c);
 
   if(!ana.agari){
+    const {s2,s3}=slots();
     const c2=el("div","card");
     const h2=el("h3",null,"ことば");
     h2.appendChild(el("em",null,`いま ${ana.make.length}こ ／ あと1まいで ${ana.nextTotal}こ`));
     c2.appendChild(h2);
-
-    c2.appendChild(el("div","sub2","いま つくれる"));
-    if(!ana.make.length){
-      c2.appendChild(el("p","meta","まだ ひとつも できて いないよ。"));
-    }else{
-      const cs=el("div","cands");
-      ana.make.slice(0,20).forEach(w=>{
-        const b=el("button","cand"+(ana.rec.has(w)?" rec":"")+(hasMean(w)?"":" nomean"),w);
-        b.onclick=()=>wordSheet(w,null,-1);cs.appendChild(b)});
-      c2.appendChild(cs);
+    const pill=w=>{const b=el("button","cand"+(ana.rec.has(w)?" rec":"")+(hasMean(w)?"":" nomean"),w);
+      b.onclick=()=>wordSheet(w,null,-1);return b};
+    const npill=o=>{const b=el("button","cand"+(o.win?" willwin":"")+(hasMean(o.w)?"":" nomean"));
+      let used=false;
+      for(const ch of o.w){ if(ch===o.c&&!used){used=true;b.appendChild(el("b",null,ch))}
+        else b.appendChild(document.createTextNode(ch)) }
+      b.appendChild(el("i",null,o.win?"あがり":"のこり"+o.rest));
+      b.onclick=()=>wordSheet(o.w,null,-1,o); return b};
+    const group=(label,nodes)=>{
+      if(!nodes.length)return;
+      c2.appendChild(el("div","sub2",label));
+      const cs=el("div","cands"); nodes.forEach(n=>cs.appendChild(n)); c2.appendChild(cs);
+    };
+    const win3=ana.nexts3.filter(o=>o.win), oth3=ana.nexts3.filter(o=>!o.win);
+    const win2=ana.nexts2.filter(o=>o.win), oth2=ana.nexts2.filter(o=>!o.win);
+    group("これが くれば あがり！", win3.concat(win2).map(npill));
+    if(s3){
+      group("いま つくれる（3もじ）", ana.make3.slice(0,16).map(pill));
+      group("あと 1まいで できる（3もじ）", oth3.map(npill));
+      if(ana.fars.length){
+        const fp=o=>{const b=el("button","cand"+(hasMean(o.w)?"":" nomean"));
+          const need={}; o.ms.forEach(ch=>need[ch]=(need[ch]||0)+1);
+          for(const ch of o.w){ if(need[ch]>0){need[ch]--;b.appendChild(el("b",null,ch))}
+            else b.appendChild(document.createTextNode(ch)) }
+          b.appendChild(el("i",null,"のこり"+o.rest));
+          b.onclick=()=>wordSheet(o.w,null,-1,{c:o.ms.join("と"),rest:o.rest,win:false,two:true});
+          return b};
+        group("あと 2まいで できる（3もじ）", ana.fars.map(fp));
+      }
+      if(!ana.make3.length && !oth3.length && !ana.fars.length)
+        c2.appendChild(el("p","meta","3もじの ことばが まだ みえないよ。"));
     }
-
-    if(ana.nexts.length){
-      c2.appendChild(el("div","sub2","あと 1まいで できる"));
-      const cs=el("div","cands");
-      ana.nexts.slice(0,24).forEach(o=>{
-        const b=el("button","cand"+(o.win?" willwin":"")+(hasMean(o.w)?"":" nomean"));
-        let used=false;
-        for(const ch of o.w){
-          if(ch===o.c&&!used){used=true;b.appendChild(el("b",null,ch))}
-          else b.appendChild(document.createTextNode(ch));
-        }
-        b.appendChild(el("i",null,o.win?"あがり":"のこり"+o.rest));
-        b.onclick=()=>wordSheet(o.w,null,-1,o);
-        cs.appendChild(b)});
-      c2.appendChild(cs);
+    if(s2){
+      const two=ana.make2.slice(0,6).map(pill).concat(oth2.slice(0,8).map(npill));
+      group("2もじ（さいごの 1くみ）", two);
     }
     c2.appendChild(el("p","meta","タップで いみが みられるよ。みどりは のこすと よい ことば、ピンクの もじは まだ もって いない はい。"));
     app.appendChild(c2);
@@ -11205,6 +11234,17 @@ $("reset").onclick=()=>{
   sh.appendChild(a); open_();
 };
 loadGame();
+/* iOSの ブラウザ ばーが したに でても ボタンが かくれないように */
+(function(){
+  const vv=window.visualViewport; if(!vv)return;
+  const fit=()=>{
+    const gap=Math.max(0, Math.round(window.innerHeight-(vv.height+vv.offsetTop)));
+    document.documentElement.style.setProperty("--vvb", gap+"px");
+  };
+  vv.addEventListener("resize",fit); vv.addEventListener("scroll",fit);
+  window.addEventListener("orientationchange",()=>setTimeout(fit,300));
+  fit();
+})();
 render();
 </script>
 </body>
