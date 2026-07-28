@@ -3,134 +3,134 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#FFF6F9">
 <title>ひらがじゃん たすけ</title>
 <style>
 :root{
-  --felt:#17513C; --felt2:#0F3A2B; --felt3:#0A2A1E;
-  --tile2:#E6DCC4; --edge:#C4B99B; --ink:#241F18;
-  --beni:#BE3A2E; --ai:#6FB6D6; --gold:#D8A742;
+  --bg:#FFF6F9; --bg2:#FCE4EE; --card:#FFFFFF;
+  --pink:#E4699A; --pinkD:#BE4B7C; --pinkL:#FFC6DC; --pinkXL:#FFEEF4;
+  --ink:#4B3742; --ink2:#9A8090; --line:#F4DAE5;
+  --mint:#4FB39B; --lilac:#9E80D0;
   --maru:"Hiragino Maru Gothic ProN","ヒラギノ丸ゴ ProN W4","Yu Gothic Medium","游ゴシック Medium","YuGothic",sans-serif;
 }
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
 html,body{margin:0;padding:0}
 body{
-  font-family:var(--maru); color:#EFEAD9;
-  background:
-    repeating-linear-gradient(90deg,rgba(0,0,0,.05) 0 2px,transparent 2px 4px),
-    repeating-linear-gradient(0deg,rgba(255,255,255,.03) 0 2px,transparent 2px 4px),
-    radial-gradient(120% 80% at 50% 0%,var(--felt) 0%,var(--felt2) 55%,var(--felt3) 100%);
-  background-attachment:fixed; min-height:100dvh; padding:0 0 40px;
+  font-family:var(--maru); color:var(--ink);
+  background:linear-gradient(180deg,var(--bg) 0%,var(--bg2) 100%) fixed;
+  min-height:100dvh; padding:0 0 96px; font-size:15px;
 }
 header{
-  display:flex;align-items:baseline;gap:10px;padding:13px 16px 11px;
-  border-bottom:1px solid rgba(255,255,255,.12);position:sticky;top:0;z-index:5;
-  background:linear-gradient(180deg,rgba(10,42,30,.97),rgba(10,42,30,.85));backdrop-filter:blur(6px);
+  display:flex;align-items:center;gap:9px;padding:12px 16px;
+  background:rgba(255,255,255,.92);backdrop-filter:blur(8px);
+  border-bottom:1px solid var(--line);position:sticky;top:0;z-index:20;
 }
-h1{font-size:16px;margin:0;letter-spacing:.06em;font-weight:600}
-.ver{font-size:11px;color:var(--gold);letter-spacing:.1em;margin-left:auto}
+h1{font-size:15.5px;margin:0;letter-spacing:.05em;font-weight:600;color:var(--pinkD)}
+.ver{font-size:10.5px;color:var(--ink2);letter-spacing:.1em;margin-left:auto}
 main{padding:0 14px;max-width:560px;margin:0 auto}
-section{margin:16px 0}
-.lab{font-size:11px;letter-spacing:.18em;color:rgba(255,255,255,.55);margin:0 0 7px;display:flex;align-items:center;gap:8px}
-.lab::after{content:"";flex:1;height:1px;background:rgba(255,255,255,.14)}
-.chips{display:flex;gap:5px;flex-wrap:wrap}
-.chip{font-family:var(--maru);font-size:12.5px;padding:7px 12px;border-radius:999px;
-  border:1px solid rgba(255,255,255,.26);background:transparent;color:#EFEAD9;cursor:pointer}
-.chip[aria-pressed="true"]{background:var(--gold);border-color:var(--gold);color:#2A1F06;font-weight:600}
-.chip.sub[aria-pressed="true"]{background:var(--ai);border-color:var(--ai);color:#08222E}
-.chip:focus-visible{outline:2px solid var(--gold);outline-offset:2px}
+.lab{font-size:11px;letter-spacing:.16em;color:var(--ink2);margin:0 0 7px;display:flex;align-items:center;gap:8px}
+.lab::after{content:"";flex:1;height:1px;background:var(--line)}
+.card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:13px;
+  margin:0 0 12px;box-shadow:0 2px 10px rgba(200,140,170,.10)}
+.card.hi{border-color:var(--pinkL);background:linear-gradient(180deg,#fff,var(--pinkXL))}
+.card h3{margin:0 0 9px;font-size:12.5px;letter-spacing:.09em;color:var(--pinkD);font-weight:600;
+  display:flex;align-items:center;gap:6px}
+.card h3 em{font-style:normal;color:var(--ink2);font-weight:400;letter-spacing:0;font-size:11.5px;margin-left:auto}
 
+/* 牌 */
 .tile{font-family:var(--maru);display:inline-flex;align-items:center;justify-content:center;
-  background:linear-gradient(180deg,#FCF8EE,#E9E0C9);color:var(--ink);border:none;border-radius:5px;
-  box-shadow:inset 0 -3px 0 var(--tile2),inset 0 0 0 1px var(--edge),0 2px 3px rgba(0,0,0,.4);cursor:pointer;padding:0}
-.tile:active{transform:translateY(1px)}
-.tile.blank{color:rgba(36,31,24,.2)}
-.tile.dim{background:linear-gradient(180deg,#CFC7B2,#B8B09A)}
+  background:linear-gradient(180deg,#fff,#FFF3F7);color:var(--ink);border:1px solid #F5CEDF;
+  border-radius:8px;box-shadow:0 2px 0 #F7C9DB,0 3px 6px rgba(200,120,155,.16);
+  cursor:pointer;padding:0;font-weight:500}
+.tile:active{transform:translateY(1px);box-shadow:0 1px 0 #F7C9DB}
+.tile.on{background:linear-gradient(180deg,var(--pink),var(--pinkD));color:#fff;border-color:var(--pinkD);box-shadow:0 2px 0 #A63C6A}
+.tile.gray{background:#F3EDF0;color:#BBAAB4;border-color:#EADFE6;box-shadow:none}
 
-.rack{display:flex;flex-wrap:wrap;gap:4px;min-height:50px;align-content:flex-start;padding:7px;
-  border-radius:8px;background:rgba(0,0,0,.22);border:1px solid rgba(255,255,255,.1)}
-.rack.seen{background:rgba(0,0,0,.14);border-style:dashed;min-height:40px}
-.rack .tile{width:31px;height:42px;font-size:20px}
-.rack.seen .tile{width:25px;height:34px;font-size:16px}
-.rack .ph{width:31px;height:42px;border-radius:5px;border:1px dashed rgba(255,255,255,.2)}
-.rack .hint{font-size:12px;color:rgba(255,255,255,.4);align-self:center;padding:6px}
-.meta{font-size:12px;color:rgba(255,255,255,.65);margin:7px 2px 0;line-height:1.65}
-.meta b{color:var(--gold);font-weight:600}
-.warn{color:#F2B8B2}
+.rack{display:flex;flex-wrap:wrap;gap:5px;min-height:52px;align-content:flex-start}
+.rack .tile{width:34px;height:46px;font-size:22px}
+.rack .ph{width:34px;height:46px;border-radius:8px;border:1.5px dashed var(--pinkL);background:rgba(255,255,255,.5)}
+.meta{font-size:12.5px;color:var(--ink2);line-height:1.7;margin:8px 0 0}
+.meta b{color:var(--pinkD);font-weight:600}
 
-.kbtabs{display:flex;gap:4px;margin:11px 0 7px}
-.kbtabs .chip{font-size:11.5px;padding:6px 10px}
-.kb{display:grid;gap:3px}
-.kb .tile{aspect-ratio:3/4;width:100%;font-size:16px}
-.kb .tile[disabled]{opacity:.3;cursor:default;box-shadow:inset 0 0 0 1px rgba(255,255,255,.18);background:transparent;color:rgba(255,255,255,.4)}
+/* ことば */
+.wlist{display:flex;flex-direction:column;gap:7px}
+.wrow{display:flex;align-items:center;gap:8px}
+.word{display:flex;gap:2px;flex:1;padding:4px;border-radius:9px;background:var(--pinkXL);
+  border:1px solid var(--line);cursor:pointer}
+.word .tile{width:26px;height:34px;font-size:17px;pointer-events:none;box-shadow:0 1px 0 #F7C9DB}
+.word.done{background:linear-gradient(180deg,#fff,#EAF7F3);border-color:#BFE6DB}
+.pill{font-family:var(--maru);flex:none;padding:8px 13px;border-radius:999px;border:none;
+  background:var(--pink);color:#fff;font-size:12.5px;font-weight:600;cursor:pointer;letter-spacing:.04em}
+.pill.ghost{background:#fff;color:var(--pinkD);border:1px solid var(--pinkL)}
+.pill:active{transform:translateY(1px)}
+.tag{font-size:10px;letter-spacing:.08em;padding:3px 7px;border-radius:6px;background:var(--pink);color:#fff;flex:none}
+.tag.kan{background:var(--lilac)} .tag.keep{background:var(--mint)}
+
+.wait{display:flex;flex-wrap:wrap;gap:6px}
+.w1{display:flex;flex-direction:column;align-items:center;gap:2px;padding:4px 5px 3px;border-radius:9px;
+  background:var(--pinkXL);border:1px solid var(--line);cursor:pointer}
+.w1 .tile{width:29px;height:38px;font-size:19px;pointer-events:none}
+.w1 .cnt{font-size:9.5px;color:var(--pinkD);white-space:nowrap}
+.w1.win{background:#EAF7F3;border-color:#9BDCC9}
+.w1.win .cnt{color:var(--mint);font-weight:600}
+
+.bar{height:8px;border-radius:5px;background:var(--pinkXL);overflow:hidden;margin:2px 0 8px}
+.bar i{display:block;height:100%;background:linear-gradient(90deg,var(--pinkL),var(--pink));border-radius:5px;transition:width .3s}
+.mean{margin-top:9px;padding:10px 12px;border-radius:10px;background:var(--pinkXL);
+  border-left:3px solid var(--pink);font-size:13.5px;line-height:1.75}
+.mean .w{color:var(--pinkD);font-weight:600}
+.mean a{display:inline-block;margin-top:6px;color:#3E88AD;font-size:12.5px;text-decoration:none;
+  border-bottom:1px solid rgba(62,136,173,.4);padding-bottom:1px}
+
+/* ふっター */
+.foot{position:fixed;left:0;right:0;bottom:0;z-index:20;padding:10px 14px calc(10px + env(safe-area-inset-bottom));
+  background:rgba(255,255,255,.94);backdrop-filter:blur(8px);border-top:1px solid var(--line);
+  display:flex;gap:8px;max-width:560px;margin:0 auto}
+.foot button{font-family:var(--maru);flex:1;padding:14px 6px;border-radius:12px;border:none;
+  font-size:14.5px;font-weight:600;cursor:pointer;letter-spacing:.03em}
+.b1{background:var(--pink);color:#fff}
+.b2{background:#fff;color:var(--pinkD);border:1.5px solid var(--pinkL)}
+.foot button[disabled]{opacity:.45}
+
+/* シート */
+.veil{position:fixed;inset:0;background:rgba(75,55,66,.42);z-index:40;opacity:0;pointer-events:none;transition:opacity .18s}
+.veil.on{opacity:1;pointer-events:auto}
+.sheet{position:fixed;left:0;right:0;bottom:0;z-index:50;background:var(--card);
+  border-radius:20px 20px 0 0;padding:14px 14px calc(16px + env(safe-area-inset-bottom));
+  transform:translateY(102%);transition:transform .22s ease;max-width:560px;margin:0 auto;
+  max-height:88dvh;overflow-y:auto;box-shadow:0 -6px 24px rgba(160,100,130,.2)}
+.sheet.on{transform:translateY(0)}
+.grab{width:38px;height:4px;border-radius:2px;background:var(--pinkL);margin:0 auto 11px}
+.sheet h2{margin:0 0 3px;font-size:15px;color:var(--pinkD);font-weight:600}
+.sheet .sub{margin:0 0 11px;font-size:12px;color:var(--ink2)}
+.tabs{display:flex;gap:5px;margin:0 0 8px}
+.tab{font-family:var(--maru);font-size:12px;padding:7px 12px;border-radius:999px;border:1px solid var(--pinkL);
+  background:#fff;color:var(--pinkD);cursor:pointer}
+.tab[aria-pressed="true"]{background:var(--pink);border-color:var(--pink);color:#fff;font-weight:600}
+.kb{display:grid;gap:4px}
+.kb .tile{aspect-ratio:3/4;width:100%;font-size:17px}
+.kb .tile[disabled]{background:#F5EFF2;color:#C9BAC3;border-color:#EEE2E9;box-shadow:none;cursor:default}
 .kb .none{visibility:hidden}
+.sheetfoot{display:flex;gap:8px;margin-top:12px}
+.sheetfoot button{font-family:var(--maru);flex:1;padding:13px;border-radius:12px;border:none;font-size:14px;font-weight:600;cursor:pointer}
 
-.btnrow{display:flex;gap:7px;margin-top:9px}
-button.act{font-family:var(--maru);flex:1;padding:12px 6px;border-radius:8px;border:none;
-  font-size:14.5px;font-weight:600;cursor:pointer;letter-spacing:.04em}
-button.act:focus-visible{outline:2px solid var(--gold);outline-offset:2px}
-.primary{background:var(--gold);color:#2A1F06}
-.ghost{background:transparent;color:rgba(255,255,255,.8);border:1px solid rgba(255,255,255,.28)}
-button.act[disabled]{opacity:.4;cursor:default}
-
-.card{background:rgba(0,0,0,.24);border:1px solid rgba(255,255,255,.12);border-radius:8px;padding:11px;margin-bottom:9px}
-.card h3{margin:0 0 8px;font-size:12.5px;letter-spacing:.1em;color:var(--gold);font-weight:600}
-.card h3 span{color:rgba(255,255,255,.5);letter-spacing:0;font-weight:400;margin-left:6px;font-size:11.5px}
-.bar{height:7px;border-radius:4px;background:rgba(255,255,255,.12);overflow:hidden;margin:3px 0 8px}
-.bar i{display:block;height:100%;background:linear-gradient(90deg,var(--gold),#F0C670)}
-.words{display:flex;flex-wrap:wrap;gap:6px}
-.word{display:flex;gap:2px;padding:4px 5px;border-radius:6px;background:rgba(255,255,255,.05);
-  border:1px solid rgba(255,255,255,.12);cursor:pointer}
-.word.pick{border-color:var(--gold);background:rgba(216,167,66,.14)}
-.word .tile{width:23px;height:31px;font-size:15px;pointer-events:none}
-.wait{display:flex;flex-wrap:wrap;gap:5px}
-.w1{display:flex;flex-direction:column;align-items:center;gap:2px;padding:4px 5px 3px;border-radius:6px;
-  background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.12);cursor:pointer}
-.w1 .tile{width:27px;height:36px;font-size:18px;pointer-events:none}
-.w1 .cnt{font-size:9.5px;color:var(--gold);letter-spacing:.03em;white-space:nowrap}
-.mean{margin-top:9px;padding:9px 11px;border-radius:7px;background:rgba(255,255,255,.07);
-  border-left:3px solid var(--gold);font-size:13.5px;line-height:1.75}
-.mean .w{color:var(--gold);font-weight:600}
-.mean a{display:inline-block;margin-top:6px;color:#BFE3F5;font-size:12.5px;text-decoration:none;
-  border-bottom:1px solid rgba(191,227,245,.45);padding-bottom:1px}
-.reveal{width:100%;padding:11px;border-radius:8px;border:1px solid var(--beni);background:rgba(190,58,46,.18);
-  color:#FFD9D4;font-family:var(--maru);font-size:14px;font-weight:600;cursor:pointer;margin-bottom:9px}
-.pon{display:flex;flex-wrap:wrap;gap:6px;margin-top:6px}
-.tag{font-size:10px;letter-spacing:.1em;padding:2px 6px;border-radius:4px;background:var(--beni);color:#fff;align-self:center}
-.tag.kan{background:var(--ai);color:#08222E}
-.note{font-size:11.5px;color:rgba(255,255,255,.45);line-height:1.7;margin-top:20px;padding-top:13px;border-top:1px solid rgba(255,255,255,.1)}
+.big{text-align:center;padding:20px 12px}
+.big .em{font-size:26px;color:var(--pinkD);font-weight:600;letter-spacing:.06em}
+.big p{margin:8px 0 0;font-size:13px;color:var(--ink2)}
+.note{font-size:11.5px;color:var(--ink2);line-height:1.7;margin:18px 0 0;padding-top:12px;border-top:1px solid var(--line)}
 @media (prefers-reduced-motion:reduce){*{transition:none!important}}
 </style>
 </head>
 <body>
-<header><h1>ひらがじゃん たすけ</h1><span class="ver">v0.2</span></header>
-<main>
-  <section><p class="lab">たすけ</p><div class="chips" id="help"></div></section>
-  <section><p class="lab">とった くみ（ポン・カン）</p><div class="chips" id="meld"></div></section>
-
-  <section>
-    <div class="chips" id="modes" style="margin-bottom:7px"></div>
-    <div class="rack" id="rack"></div>
-    <p class="meta" id="info"></p>
-    <div id="seenwrap" style="margin-top:10px;display:none">
-      <p class="lab">みえた ひ（さいごの 1まいで ポン・カンを みます）</p>
-      <div class="rack seen" id="seen"></div>
-    </div>
-    <div class="kbtabs" id="kbtabs"></div>
-    <div class="kb" id="kb"></div>
-    <div class="btnrow">
-      <button class="act primary" id="find">こたえを さがす</button>
-      <button class="act ghost" id="deal">くばる</button>
-      <button class="act ghost" id="clear">けす</button>
-    </div>
-  </section>
-
-  <section id="out"></section>
-  <p class="note">ことば <b id="dn"></b>ご（うち いみつき <b id="dm"></b>ご）。牌は「あ〜ん（をを のぞく）」×2こ、だくおん・はんだくおん・ちいさい じ・のばすぼう ×1こずつ、ぜんぶで 120こ。</p>
-</main>
+<header><h1>ひらがじゃん たすけ</h1><span class="ver">v0.3</span></header>
+<main id="app"></main>
+<div class="foot" id="foot"></div>
+<div class="veil" id="veil"></div>
+<div class="sheet" id="sheet"></div>
 
 <script>
-/* ========== じしょ ========== */
-const RAW = `あい|
+/* ===== じしょ ===== */
+const RAW=`あい|
 あいさつ|ひとに かける ことば
 あいす|つめたくて あまい おかし
 あいず|
@@ -1169,284 +1169,339 @@ const RAW = `あい|
 わら|
 わらびもち|
 わん|`;
-const DICT={}, BYLEN={2:[],3:[],4:[],5:[],6:[]};
+const DICT={},BYLEN={2:[],3:[],4:[],5:[],6:[]};
 for(const line of RAW.split("\n")){
-  if(!line) continue;
-  const i=line.indexOf("|");
-  const w=line.slice(0,i), m=line.slice(i+1);
-  DICT[w]=m; if(BYLEN[w.length]) BYLEN[w.length].push(w);
+  if(!line)continue;
+  const i=line.indexOf("|"), w=line.slice(0,i);
+  DICT[w]=line.slice(i+1); if(BYLEN[w.length]) BYLEN[w.length].push(w);
 }
-dn.textContent=Object.keys(DICT).length;
-dm.textContent=Object.values(DICT).filter(Boolean).length;
-
-/* ========== はい ========== */
+/* ===== はい ===== */
 const SEI="あいうえおかきくけこさしすせそたちつてとなにぬねのはひふへほまみむめもやゆよらりるれろわん";
-const DAK="がぎぐげござじずぜぞだぢづでどばびぶべぼ", HAN="ぱぴぷぺぽ", SML="ゃゅょっー";
-const INV={}; for(const c of SEI) INV[c]=2; for(const c of DAK+HAN+SML) INV[c]=1;
-const KB_MAIN=[
- ["わ","ら","や","ま","は","な","た","さ","か","あ"],
- ["","り","","み","ひ","に","ち","し","き","い"],
- ["ん","る","ゆ","む","ふ","ぬ","つ","す","く","う"],
- ["","れ","","め","へ","ね","て","せ","け","え"],
+const DAK="がぎぐげござじずぜぞだぢづでどばびぶべぼ",HAN="ぱぴぷぺぽ",SML="ゃゅょっー";
+const INV={};for(const c of SEI)INV[c]=2;for(const c of DAK+HAN+SML)INV[c]=1;
+const KB_MAIN=[["わ","ら","や","ま","は","な","た","さ","か","あ"],["","り","","み","ひ","に","ち","し","き","い"],
+ ["ん","る","ゆ","む","ふ","ぬ","つ","す","く","う"],["","れ","","め","へ","ね","て","せ","け","え"],
  ["","ろ","よ","も","ほ","の","と","そ","こ","お"]];
-const KB_DAK=[["ば","だ","ざ","が"],["び","ぢ","じ","ぎ"],["ぶ","づ","ず","ぐ"],
- ["べ","で","ぜ","げ"],["ぼ","ど","ぞ","ご"],["ぱ","ぴ","ぷ","ぺ"],["ぽ","","",""]];
+const KB_DAK=[["ば","だ","ざ","が"],["び","ぢ","じ","ぎ"],["ぶ","づ","ず","ぐ"],["べ","で","ぜ","げ"],
+ ["ぼ","ど","ぞ","ご"],["ぱ","ぴ","ぷ","ぺ"],["ぽ","","",""]];
 const KB_SML=[["ゃ","ゅ","ょ","っ","ー"]];
 
-/* ========== じょうたい ========== */
-let help=1, melds=0, hand=[], seen=[], mode="hand", kbmode="main", shown=false, last=null;
+/* ===== じょうたい ===== */
+let phase="setup";          // setup | play
+let hand=[], keeps=[], seen=[], kbmode="main", ana=null;
+const $=id=>document.getElementById(id);
 
-/* ========== どうぐ ========== */
 const cnt=a=>{const p={};for(const c of a)p[c]=(p[c]||0)+1;return p};
-function fits(w,p){const c={};for(const ch of w){c[ch]=(c[ch]||0)+1;if(c[ch]>(p[ch]||0))return false}return true}
-function take(p,w){const q={...p};for(const ch of w)q[ch]--;return q}
-const needTiles=()=>2+3*(4-melds);
+const fits=(w,p)=>{const c={};for(const ch of w){c[ch]=(c[ch]||0)+1;if(c[ch]>(p[ch]||0))return false}return true};
+const take=(p,w)=>{const q={...p};for(const ch of w)q[ch]--;return q};
+function slots(){let s2=1,s3=4;for(const k of keeps){k.w.length===2?s2--:s3--}return{s2:Math.max(0,s2),s3:Math.max(0,s3)}}
+function need(){const{s2,s3}=slots();return s2*2+s3*3}
 
-/* いちばん たくさんの ひを ことばに できる くみあわせ */
-function bestCover(pool,n3,c2,c3){
+function bestCover(pool,s2,s3,c2,c3){
   let best={cov:0,words:[]};
-  (function dfs(p,used,start,acc,cov){
-    if(cov+ (n3-used)*3 + 2 <= best.cov) return;
-    if(cov>best.cov) best={cov,words:acc.slice()};
-    for(const w of c2){ if(fits(w,p) && cov+2>best.cov) best={cov:cov+2,words:acc.concat([w])}; }
-    if(used>=n3) return;
-    for(let k=start;k<c3.length;k++){
-      const w=c3[k]; if(!fits(w,p)) continue;
-      acc.push(w); dfs(take(p,w),used+1,k,acc,cov+3); acc.pop();
-    }
-  })(pool,0,0,[],0);
+  const d2=(p,u,st,acc,cov)=>{
+    if(cov>best.cov)best={cov,words:acc.slice()};
+    if(u>=s2)return;
+    for(let k=st;k<c2.length;k++){const w=c2[k];if(!fits(w,p))continue;
+      acc.push(w);d2(take(p,w),u+1,k,acc,cov+2);acc.pop()}
+  };
+  const d3=(p,u,st,acc,cov)=>{
+    d2(p,0,0,acc,cov);
+    if(u>=s3||cov+(s3-u)*3+s2*2<=best.cov)return;
+    for(let k=st;k<c3.length;k++){const w=c3[k];if(!fits(w,p))continue;
+      acc.push(w);d3(take(p,w),u+1,k,acc,cov+3);acc.pop()}
+  };
+  d3(pool,0,0,[],0);
   return best;
 }
-function analyze(chars){
-  const n3=4-melds, need=needTiles(), pool=cnt(chars);
+function analyze(){
+  const{s2,s3}=slots(), N=need(), pool=cnt(hand);
   const c2=BYLEN[2].filter(w=>fits(w,pool)), c3=BYLEN[3].filter(w=>fits(w,pool));
-  const cover=bestCover(pool,n3,c2,c3);
-  const agari=(chars.length===need && cover.cov===need);
-  // いま つくれる ことば（ぜんぶ）
-  const makeable=[...c3,...c2,...BYLEN[4].filter(w=>fits(w,pool)),...BYLEN[5].filter(w=>fits(w,pool))];
-  // つぎに ほしい ひ
+  const cover=bestCover(pool,s2,s3,c2,c3);
+  const agari=(hand.length===N&&cover.cov===N);
+  const make=[...(s3?c3:[]),...(s2?c2:[])];   // あいている わくの ながさだけ
+  const seenAll=cnt(hand.concat(seen,...keeps.map(k=>[...k.w])));
   const wants=[];
-  const seenAll=cnt(chars.concat(seen));
   for(const c in INV){
-    const rest=INV[c]-(seenAll[c]||0);
-    if(rest<=0) continue;
-    const p2=cnt(chars.concat([c]));
-    const d2=BYLEN[2].filter(w=>fits(w,p2)), d3=BYLEN[3].filter(w=>fits(w,p2));
-    const cv=bestCover(p2,n3,d2,d3);
-    const gain=cv.cov-cover.cov;
-    if(gain>0){
-      const nw=[...d3,...d2].filter(w=>w.includes(c)).slice(0,8);
-      wants.push({c,rest,gain,cov:cv.cov,words:nw,full:cv.cov===need});
-    }
+    const rest=INV[c]-(seenAll[c]||0); if(rest<=0)continue;
+    const p2=cnt(hand.concat([c]));
+    const e2=BYLEN[2].filter(w=>fits(w,p2)),e3=BYLEN[3].filter(w=>fits(w,p2));
+    const cv=bestCover(p2,s2,s3,e2,e3);
+    if(cv.cov>cover.cov) wants.push({c,rest,cov:cv.cov,win:cv.cov===N&&hand.length+1===N,
+      words:[...e3,...e2].filter(w=>w.includes(c)).slice(0,6)});
   }
-  wants.sort((a,b)=> (b.full-a.full) || (b.cov-a.cov) || (b.rest*b.words.length-a.rest*a.words.length));
-  // ポン・カン
-  const pon=[];
-  const d=seen.length?seen[seen.length-1]:null;
-  if(d && melds<4){
-    for(const L of [3,4,5]){
-      for(const w of BYLEN[L]){
-        if(!w.includes(d)) continue;
-        const q={...pool}; q[d]=(q[d]||0)+1;
-        if(fits(w,q)) pon.push({w,kind:L===3?"ポン":"カン"});
-      }
-    }
+  wants.sort((a,b)=>(b.win-a.win)||(b.cov-a.cov)||(b.rest-a.rest));
+  return{N,cover,agari,make,wants};
+}
+function ponFor(c){
+  const out=[], pool=cnt(hand), q={...pool}; q[c]=(q[c]||0)+1;
+  if(slots().s3>0) for(const L of[3,4,5]) for(const w of BYLEN[L]){
+    if(w.includes(c)&&fits(w,q)) out.push({w,kind:L===3?"ポン":"カン"});
   }
-  return {need,cover,agari,makeable,wants,pon,discard:d};
+  return out.slice(0,8);
 }
 
-/* ========== えがく ========== */
-function tile(ch,cls){const b=document.createElement("button");b.className="tile"+(cls?" "+cls:"");b.type="button";b.textContent=ch;return b}
-const HELPS=["ことばだけ","りゆうも","あいてを みる"];
-
-function chips(){
-  help_.innerHTML="";
-  HELPS.forEach((t,i)=>{const b=document.createElement("button");b.className="chip";b.type="button";b.textContent=t;
-    b.setAttribute("aria-pressed",help===i+1);b.onclick=()=>{help=i+1;chips();modesUI();render()};help_.appendChild(b)});
-  meld_.innerHTML="";
-  for(let i=0;i<=4;i++){const b=document.createElement("button");b.className="chip";b.type="button";b.textContent=i+"くみ";
-    b.setAttribute("aria-pressed",i===melds);b.onclick=()=>{melds=i;chips();render()};meld_.appendChild(b)}
-}
-function modesUI(){
-  const wrap=document.getElementById("modes"); wrap.innerHTML="";
-  document.getElementById("seenwrap").style.display = help>=3 ? "" : "none";
-  if(help<3){ mode="hand"; wrap.style.display="none"; return; }
-  wrap.style.display="flex";
-  [["hand","てはいを いれる"],["seen","みえた ひを いれる"]].forEach(([k,t])=>{
-    const b=document.createElement("button");b.className="chip sub";b.type="button";b.textContent=t;
-    b.setAttribute("aria-pressed",mode===k);b.onclick=()=>{mode=k;modesUI();drawKb()};wrap.appendChild(b)});
-}
-function drawKb(){
-  const tabs=document.getElementById("kbtabs"); tabs.innerHTML="";
-  [["main","せいおん"],["dak","だくおん"],["sml","ちいさい じ"]].forEach(([k,t])=>{
-    const b=document.createElement("button");b.className="chip";b.type="button";b.textContent=t;
-    b.setAttribute("aria-pressed",k===kbmode);b.onclick=()=>{kbmode=k;drawKb()};tabs.appendChild(b)});
-  const kb=document.getElementById("kb");
-  const rows=kbmode==="main"?KB_MAIN:kbmode==="dak"?KB_DAK:KB_SML;
-  kb.style.gridTemplateColumns=`repeat(${rows[0].length},1fr)`;
-  kb.style.maxWidth = kbmode==="main" ? "" : "230px";
-  kb.innerHTML="";
-  const used=cnt(hand.concat(seen));
-  rows.forEach(r=>r.forEach(ch=>{
-    if(!ch){const d=document.createElement("div");d.className="none";kb.appendChild(d);return}
-    const b=tile(ch);
-    const left=INV[ch]-(used[ch]||0);
-    if(left<=0 || (mode==="hand" && hand.length>=needTiles())) b.disabled=true;
-    b.onclick=()=>{ (mode==="hand"?hand:seen).push(ch); drawKb(); render() };
-    kb.appendChild(b);
-  }));
-}
-function render(){
-  const need=needTiles();
-  const rack=document.getElementById("rack"); rack.innerHTML="";
-  hand.forEach((ch,i)=>{const b=tile(ch);b.onclick=()=>{hand.splice(i,1);drawKb();render()};rack.appendChild(b)});
-  for(let i=hand.length;i<need;i++){const d=document.createElement("div");d.className="ph";rack.appendChild(d)}
-  const sr=document.getElementById("seen"); sr.innerHTML="";
-  if(!seen.length){const s=document.createElement("span");s.className="hint";s.textContent="すてられた ひを おすと ここに はいります";sr.appendChild(s)}
-  seen.forEach((ch,i)=>{const b=tile(ch,i===seen.length-1?"":"dim");b.onclick=()=>{seen.splice(i,1);drawKb();render()};sr.appendChild(b)});
-  let msg=`てはい <b>${hand.length}</b> / あがりは <b>${need}</b>まい`;
-  if(melds>0) msg+=`（ポン・カン ${melds}くみ ぶん）`;
-  if(hand.length>need) msg=`<span class="warn">おおすぎます（${hand.length} / ${need}）</span>`;
-  document.getElementById("info").innerHTML=msg;
-  document.getElementById("find").disabled = hand.length<2 || hand.length>need;
-  if(last) draw();
-}
-function deal(){
-  const wall=[]; for(const c in INV) for(let i=0;i<INV[c];i++) wall.push(c);
-  for(let i=wall.length-1;i>0;i--){const j=Math.random()*(i+1)|0;[wall[i],wall[j]]=[wall[j],wall[i]]}
-  hand=wall.slice(0,needTiles()-1); seen=[]; last=null; shown=false;
-  document.getElementById("out").innerHTML=""; drawKb(); render();
-}
-
-function mask(w){ return shown ? w : "○".repeat(w.length) }
-function wordEl(w,box,pick){
-  const d=document.createElement("div"); d.className="word"+(pick?" pick":"");
-  for(const ch of mask(w)) d.appendChild(tile(ch,ch==="○"?"blank":""));
-  if(shown) d.onclick=()=>meanEl(w,box);
-  return d;
-}
-function meanEl(w,box){
-  box.querySelectorAll(".mean").forEach(e=>e.remove());
-  const m=document.createElement("div"); m.className="mean";
-  const p=document.createElement("div");
-  p.innerHTML=`<span class="w">${w}</span>　${DICT[w] || "（いみは まだ はいって いません）"}`;
-  m.appendChild(p);
-  const a=document.createElement("a");
+/* ===== びょうが ===== */
+const el=(t,c,x)=>{const e=document.createElement(t);if(c)e.className=c;if(x!=null)e.textContent=x;return e};
+function tileEl(ch,cls){const b=el("button","tile"+(cls?" "+cls:""),ch);b.type="button";return b}
+function wordEl(w,cls){const d=el("div","word"+(cls?" "+cls:""));for(const ch of w)d.appendChild(tileEl(ch));return d}
+function meanBox(w,host){
+  host.querySelectorAll(".mean").forEach(e=>e.remove());
+  const m=el("div","mean");
+  m.innerHTML=`<span class="w">${w}</span>　${DICT[w]||"（いみは まだ はいって いません）"}`;
+  const a=el("a",null,"もっと しらべる（Yahoo!きっず）");
   a.href="https://kids.yahoo.co.jp/search?p="+encodeURIComponent(w+" とは");
-  a.target="_blank"; a.rel="noopener"; a.textContent="もっと しらべる（Yahoo!きっず）";
-  m.appendChild(a); box.appendChild(m);
+  a.target="_blank";a.rel="noopener";m.appendChild(document.createElement("br"));m.appendChild(a);
+  host.appendChild(m);
 }
-function card(title,sub){
-  const c=document.createElement("div"); c.className="card";
-  const h=document.createElement("h3"); h.textContent=title;
-  if(sub){const s=document.createElement("span");s.textContent=sub;h.appendChild(s)}
-  c.appendChild(h); return c;
+
+function render(){
+  const app=$("app"); app.innerHTML="";
+  if(phase==="setup") return renderSetup(app);
+  ana=analyze(); renderPlay(app); renderFoot();
 }
-function draw(){
-  const out=document.getElementById("out"); out.innerHTML="";
-  if(!last) return;
-  const r=last;
 
-  if(!shown){
-    const b=document.createElement("button"); b.className="reveal"; b.textContent="こたえを みる";
-    b.onclick=()=>{shown=true;draw()}; out.appendChild(b);
+/* --- 1. くばられた ひを いれる --- */
+function renderSetup(app){
+  const N=need();
+  const c=el("div","card hi");
+  c.appendChild(el("h3",null,"くばられた ひを いれよう"));
+  const r=el("div","rack");
+  hand.forEach((ch,i)=>{const b=tileEl(ch);b.onclick=()=>{hand.splice(i,1);render()};r.appendChild(b)});
+  for(let i=hand.length;i<N-1;i++) r.appendChild(el("div","ph"));
+  c.appendChild(r);
+  const p=el("p","meta"); p.innerHTML=`あと <b>${Math.max(0,N-1-hand.length)}</b>まい。ひを おすと はいるよ（まちがえたら てはいを タップ）`;
+  c.appendChild(p); app.appendChild(c);
+  app.appendChild(kbCard(ch=>{hand.push(ch); if(hand.length>=N-1){phase="play"} render();}));
+  $("foot").innerHTML="";
+  if(hand.length>=2){
+    const b=el("button","b1","これで はじめる");b.onclick=()=>{phase="play";render()};$("foot").appendChild(b);
   }
+  const d=el("button","b2","テスト：くばる");
+  d.onclick=()=>{const wall=[];for(const c in INV)for(let i=0;i<INV[c];i++)wall.push(c);
+    for(let i=wall.length-1;i>0;i--){const j=Math.random()*(i+1)|0;[wall[i],wall[j]]=[wall[j],wall[i]]}
+    hand=wall.slice(0,need()-1);keeps=[];seen=[];phase="play";render()};
+  $("foot").appendChild(d);
+}
+function kbCard(pick){
+  const c=el("div","card");
+  const t=el("div","tabs");
+  [["main","せいおん"],["dak","だくおん"],["sml","ちいさい じ"]].forEach(([k,x])=>{
+    const b=el("button","tab",x);b.type="button";b.setAttribute("aria-pressed",k===kbmode);
+    b.onclick=()=>{kbmode=k;render()};t.appendChild(b)});
+  c.appendChild(t); c.appendChild(kbGrid(pick)); return c;
+}
+function kbGrid(pick){
+  const rows=kbmode==="main"?KB_MAIN:kbmode==="dak"?KB_DAK:KB_SML;
+  const g=el("div","kb");
+  g.style.gridTemplateColumns=`repeat(${rows[0].length},1fr)`;
+  if(kbmode!=="main") g.style.maxWidth="240px";
+  const used=cnt(hand.concat(seen,...keeps.map(k=>[...k.w])));
+  rows.forEach(r=>r.forEach(ch=>{
+    if(!ch){g.appendChild(el("div","none"));return}
+    const b=tileEl(ch);
+    if(INV[ch]-(used[ch]||0)<=0) b.disabled=true;
+    b.onclick=()=>pick(ch); g.appendChild(b);
+  }));
+  return g;
+}
 
-  if(r.agari){
-    const c=card("あがれる！");
-    const ws=document.createElement("div"); ws.className="words";
-    r.cover.words.forEach(w=>ws.appendChild(wordEl(w,c,true)));
-    c.appendChild(ws); out.appendChild(c);
-  }
+/* --- 2. ゲームちゅう --- */
+function renderPlay(app){
+  const N=ana.N, over=hand.length>N;
 
-  if(help>=2){
-    const c=card("いまの すすみぐあい");
-    const bar=document.createElement("div"); bar.className="bar";
-    const i=document.createElement("i"); i.style.width=Math.round(r.cover.cov/r.need*100)+"%";
-    bar.appendChild(i); c.appendChild(bar);
-    const p=document.createElement("p"); p.className="meta"; p.style.margin="0";
-    p.innerHTML=`ことばに なった ひは <b>${r.cover.cov}</b> / ${r.need}まい。のこり <b>${r.need-r.cover.cov}</b>まいを かえよう。`;
-    c.appendChild(p); out.appendChild(c);
-  }
-
-  if(!r.agari){
-    const c=card("いま つくれる ことば", r.makeable.length+"こ");
-    if(!r.makeable.length){
-      const p=document.createElement("p"); p.className="meta"; p.style.margin="0";
-      p.textContent="まだ ひとつも できて いないよ。したの「ほしい ひ」を ねらって みよう。";
-      c.appendChild(p);
-    }else{
-      const ws=document.createElement("div"); ws.className="words";
-      const keep=new Set(r.cover.words);
-      r.makeable.slice(0,14).forEach(w=>ws.appendChild(wordEl(w,c,keep.has(w))));
-      c.appendChild(ws);
-      if(help>=2 && r.cover.words.length){
-        const p=document.createElement("p"); p.className="meta";
-        p.innerHTML="きいろい わくは、いま <b>のこして おくと よい</b> ことばだよ。";
-        c.appendChild(p);
-      }
-    }
-    out.appendChild(c);
-  }
-
-  if(r.wants.length){
-    const c=card("つぎに ほしい ひ", help>=2 ? r.wants.length+"しゅるい" : "");
-    const w=document.createElement("div"); w.className="wait";
-    r.wants.slice(0,help>=2?18:10).forEach(o=>{
-      const d=document.createElement("div"); d.className="w1";
-      d.appendChild(tile(shown?o.c:"○", shown?"":"blank"));
-      if(help>=2){
-        const s=document.createElement("span"); s.className="cnt";
-        s.textContent = o.full ? "あがり!" : "のこり"+o.rest;
-        d.appendChild(s);
-      }
-      if(shown) d.onclick=()=>{
-        c.querySelectorAll(".mean").forEach(e=>e.remove());
-        const m=document.createElement("div"); m.className="mean";
-        m.innerHTML=`<span class="w">${o.c}</span>　これが くると：${o.words.join("・")||"かたちが すすむ"}`
-          + (help>=2 ? `<br>やまと みんなの てに のこり <b>${o.rest}</b>まい` : "");
-        c.appendChild(m);
-      };
-      w.appendChild(d);
+  if(ana.agari){
+    const c=el("div","card hi");
+    const b=el("div","big");
+    b.appendChild(el("div","em","あがり！ 🎉"));
+    b.appendChild(el("p",null,"ことばが ぜんぶ そろったよ"));
+    c.appendChild(b);
+    const wl=el("div","wlist");
+    keeps.concat(ana.cover.words.map(w=>({w,kind:"keep"}))).forEach(k=>{
+      const row=el("div","wrow");
+      row.appendChild(el("span","tag "+(k.kind==="カン"?"kan":k.kind==="ポン"?"":"keep"),k.kind==="keep"?"きめた":k.kind));
+      const wd=wordEl(k.w,"done"); wd.onclick=()=>meanBox(k.w,c); row.appendChild(wd);
+      wl.appendChild(row);
     });
-    c.appendChild(w); out.appendChild(c);
+    c.appendChild(wl); app.appendChild(c);
   }
 
-  if(help>=3){
-    const c=card("あいての すてはい", r.discard ? "「"+r.discard+"」" : "みえた ひを いれてね");
-    if(!r.discard){
-      const p=document.createElement("p");p.className="meta";p.style.margin="0";
-      p.textContent="うえの「みえた ひを いれる」に して、あいてが すてた ひを おしてね。";
-      c.appendChild(p);
-    }else if(!r.pon.length){
-      const p=document.createElement("p");p.className="meta";p.style.margin="0";
-      p.textContent="この ひでは ポンも カンも できないよ。";
-      c.appendChild(p);
-    }else{
-      r.pon.slice(0,10).forEach(o=>{
-        const row=document.createElement("div"); row.className="pon";
-        const t=document.createElement("span"); t.className="tag"+(o.kind==="カン"?" kan":""); t.textContent=o.kind;
-        row.appendChild(t); row.appendChild(wordEl(o.w,c,true)); c.appendChild(row);
-      });
-      const p=document.createElement("p");p.className="meta";
-      p.innerHTML="ポン・カンを したら、うえの「とった くみ」を <b>1つ ふやして</b> ね。";
-      c.appendChild(p);
-    }
-    out.appendChild(c);
+  if(keeps.length){
+    const c=el("div","card");
+    c.appendChild(el("h3",null,"きめた ことば"));
+    const wl=el("div","wlist");
+    keeps.forEach((k,i)=>{
+      const row=el("div","wrow");
+      row.appendChild(el("span","tag "+(k.kind==="カン"?"kan":k.kind==="ポン"?"":"keep"),k.kind==="keep"?"きめた":k.kind));
+      const wd=wordEl(k.w,"done"); wd.onclick=()=>meanBox(k.w,c); row.appendChild(wd);
+      const u=el("button","pill ghost","もどす");
+      u.onclick=()=>{ if(k.kind==="keep") hand=hand.concat([...k.w]); keeps.splice(i,1); render() };
+      row.appendChild(u); wl.appendChild(row);
+    });
+    c.appendChild(wl);
+    const kd=keeps.filter(k=>k.draw>0).reduce((a,k)=>a+k.draw,0);
+    if(kd>0 && hand.length<need()-1)
+      c.appendChild(el("p","meta","カンを したから、やまから "+kd+"まい ひいてね（「ツモった」から いれられるよ）"));
+    app.appendChild(c);
   }
+
+  const c=el("div","card"+(hand.length>N-1?" hi":""));
+  const h=el("h3",null, hand.length>N-1 ? "どれを すてる？" : "てはい");
+  h.appendChild(el("em",null,`${hand.length} / ${N}まい`)); c.appendChild(h);
+  const r=el("div","rack");
+  hand.forEach((ch,i)=>{
+    const b=tileEl(ch, hand.length>N-1?"":"");
+    b.onclick=()=>{ if(hand.length>N-1){ seen.push(ch); hand.splice(i,1); render() } else { showDiscardHelp(ch,i,c) } };
+    r.appendChild(b);
+  });
+  for(let i=hand.length;i<N;i++) r.appendChild(el("div","ph"));
+  c.appendChild(r);
+  const bar=el("div","bar"); const fi=el("i"); fi.style.width=Math.round(ana.cover.cov/N*100)+"%"; bar.appendChild(fi);
+  c.appendChild(bar);
+  const p=el("p","meta");
+  p.innerHTML = over ? `<b>${hand.length-N}まい おおいよ。</b>すてる ひを タップしてね。`
+    : hand.length>N-1 ? `ことばに なった ひは <b>${ana.cover.cov}</b>まい。いらない ひを タップして すてよう。`
+    : `ことばに なった ひは <b>${ana.cover.cov}</b> / ${N}まい。あと <b>${N-ana.cover.cov}</b>まい かえよう。`;
+  c.appendChild(p); app.appendChild(c);
+
+  if(!ana.agari){
+    const c2=el("div","card");
+    const h2=el("h3",null,"つくれる ことば"); h2.appendChild(el("em",null,ana.make.length+"こ")); c2.appendChild(h2);
+    if(!ana.make.length){
+      c2.appendChild(el("p","meta","まだ ひとつも できて いないよ。したの「ほしい ひ」を ねらおう。"));
+    }else{
+      const wl=el("div","wlist"); const keep=new Set(ana.cover.words);
+      ana.make.slice(0,12).forEach(w=>{
+        const row=el("div","wrow");
+        const wd=wordEl(w, keep.has(w)?"done":""); wd.onclick=()=>meanBox(w,c2); row.appendChild(wd);
+        const b=el("button","pill","きめる");
+        b.onclick=()=>{ for(const ch of w){const i=hand.indexOf(ch); if(i>=0)hand.splice(i,1)}
+          keeps.push({w,kind:"keep"}); render() };
+        row.appendChild(b); wl.appendChild(row);
+      });
+      c2.appendChild(wl);
+      c2.appendChild(el("p","meta","「きめる」を おすと、その ことばを とっておいて、のこりで かんがえるよ。"));
+    }
+    app.appendChild(c2);
+
+    if(ana.wants.length){
+      const c3=el("div","card");
+      const h3=el("h3",null,"つぎに ほしい ひ"); h3.appendChild(el("em",null,ana.wants.length+"しゅるい")); c3.appendChild(h3);
+      const w=el("div","wait");
+      ana.wants.slice(0,16).forEach(o=>{
+        const d=el("div","w1"+(o.win?" win":""));
+        d.appendChild(tileEl(o.c));
+        d.appendChild(el("span","cnt",o.win?"あがり!":"のこり"+o.rest));
+        d.onclick=()=>{
+          c3.querySelectorAll(".mean").forEach(e=>e.remove());
+          const m=el("div","mean");
+          m.innerHTML=`<span class="w">${o.c}</span>　これが くると：${o.words.join("・")||"かたちが すすむ"}<br>やまと みんなの てに <b>のこり ${o.rest}まい</b>`;
+          c3.appendChild(m);
+        };
+        w.appendChild(d);
+      });
+      c3.appendChild(w); app.appendChild(c3);
+    }
+  }
+
+  if(seen.length){
+    const c4=el("div","card");
+    const h4=el("h3",null,"すてられた ひ"); h4.appendChild(el("em",null,seen.length+"まい")); c4.appendChild(h4);
+    const r2=el("div","rack");
+    seen.forEach((ch,i)=>{const b=tileEl(ch,"gray");b.style.width="26px";b.style.height="34px";b.style.fontSize="16px";
+      b.onclick=()=>{seen.splice(i,1);render()};r2.appendChild(b)});
+    r2.style.minHeight="0"; c4.appendChild(r2);
+    c4.appendChild(el("p","meta","タップで けせるよ。ここに ある ひは「のこり」から ひいて かぞえて います。"));
+    app.appendChild(c4);
+  }
+
+  app.appendChild(el("p","note","ことば "+Object.keys(DICT).length+"ご。いみが ない ことばは「もっと しらべる」だけ でます。"));
+}
+function showDiscardHelp(ch,i,host){
+  host.querySelectorAll(".mean").forEach(e=>e.remove());
+  const m=el("div","mean");
+  const rest=hand.slice(); rest.splice(i,1);
+  const{s2,s3}=slots(), p=cnt(rest);
+  const cv=bestCover(p,s2,s3,BYLEN[2].filter(w=>fits(w,p)),BYLEN[3].filter(w=>fits(w,p)));
+  const diff=ana.cover.cov-cv.cov;
+  m.innerHTML=`<span class="w">${ch}</span>　これを すてると、ことばに なる ひは <b>${cv.cov}まい</b>`
+    +(diff>0?`（いまより ${diff}まい へる）`:"（へらないよ）");
+  host.appendChild(m);
 }
 
-/* ========== そうさ ========== */
-document.getElementById("find").onclick=()=>{
-  shown=false; last=analyze(hand.slice()); draw();
-  const o=document.getElementById("out"); if(o.scrollIntoView) o.scrollIntoView({behavior:"smooth",block:"start"});
-};
-document.getElementById("deal").onclick=deal;
-document.getElementById("clear").onclick=()=>{
-  hand=[];seen=[];last=null;shown=false;document.getElementById("out").innerHTML="";drawKb();render();
-};
-const help_=document.getElementById("help"), meld_=document.getElementById("meld");
-chips(); modesUI(); drawKb(); render();
+/* --- ふっター --- */
+function renderFoot(){
+  const f=$("foot"); f.innerHTML="";
+  const N=ana.N;
+  if(hand.length<N){
+    const b=el("button","b1","ツモった");
+    b.onclick=()=>sheet("ひいた ひは？","1つ えらんでね",ch=>{hand.push(ch);close();render()});
+    f.appendChild(b);
+  }else{
+    const b=el("button","b1","すてる ひを タップ"); b.disabled=true; f.appendChild(b);
+  }
+  const b2=el("button","b2","あいてが すてた");
+  b2.onclick=()=>sheet("あいてが すてた ひは？","1つ えらんでね",ch=>{ afterDiscard(ch) });
+  f.appendChild(b2);
+  const b3=el("button","b2","はじめから");
+  b3.onclick=()=>{hand=[];keeps=[];seen=[];phase="setup";render()};
+  f.appendChild(b3);
+}
+function afterDiscard(ch){
+  const list=ponFor(ch);
+  const p2=cnt(hand.concat([ch])), {s2,s3}=slots();
+  const cv=bestCover(p2,s2,s3,BYLEN[2].filter(w=>fits(w,p2)),BYLEN[3].filter(w=>fits(w,p2)));
+  const ron=(hand.length+1===need()&&cv.cov===need());
+  if(!list.length&&!ron){ seen.push(ch); close(); render(); return; }
+  const s=$("sheet"); s.innerHTML="";
+  s.appendChild(el("div","grab"));
+  s.appendChild(el("h2",null, ron?"ロン できる！ 🎉":"ポン・カン できるよ"));
+  s.appendChild(el("p","sub","「"+ch+"」を つかうと この ことばが つくれます"));
+  if(ron){
+    const c=el("div","card hi"); c.appendChild(el("div","big")).appendChild(el("div","em","あがり！"));
+    s.appendChild(c);
+  }
+  const wl=el("div","wlist");
+  list.forEach(o=>{
+    const row=el("div","wrow");
+    row.appendChild(el("span","tag"+(o.kind==="カン"?" kan":""),o.kind));
+    row.appendChild(wordEl(o.w));
+    const b=el("button","pill",o.kind+"する");
+    b.onclick=()=>{
+      const need2=[...o.w]; const idx=need2.indexOf(ch); need2.splice(idx,1);
+      for(const c2 of need2){const i=hand.indexOf(c2); if(i>=0)hand.splice(i,1)}
+      keeps.push({w:o.w,kind:o.kind, draw:o.kind==="カン"?o.w.length-3:0}); close(); render();
+    };
+    row.appendChild(b); wl.appendChild(row);
+  });
+  s.appendChild(wl);
+  const ft=el("div","sheetfoot");
+  const no=el("button","b2","なにも しない");
+  no.onclick=()=>{seen.push(ch);close();render()};
+  ft.appendChild(no); s.appendChild(ft);
+  open_();
+}
+
+/* --- シート --- */
+function sheet(title,sub,pick){
+  const s=$("sheet"); s.innerHTML="";
+  s.appendChild(el("div","grab"));
+  s.appendChild(el("h2",null,title));
+  s.appendChild(el("p","sub",sub));
+  const t=el("div","tabs");
+  [["main","せいおん"],["dak","だくおん"],["sml","ちいさい じ"]].forEach(([k,x])=>{
+    const b=el("button","tab",x);b.type="button";b.setAttribute("aria-pressed",k===kbmode);
+    b.onclick=()=>{kbmode=k;sheet(title,sub,pick)};t.appendChild(b)});
+  s.appendChild(t); s.appendChild(kbGrid(pick));
+  const ft=el("div","sheetfoot");
+  const no=el("button","b2","やめる"); no.onclick=close; ft.appendChild(no);
+  s.appendChild(ft); open_();
+}
+function open_(){$("veil").classList.add("on");$("sheet").classList.add("on")}
+function close(){$("veil").classList.remove("on");$("sheet").classList.remove("on")}
+$("veil").onclick=close;
+
+render();
 </script>
 </body>
 </html>
