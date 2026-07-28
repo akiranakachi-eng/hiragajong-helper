@@ -22,7 +22,9 @@ body{font-family:var(--maru);color:var(--ink);font-size:15px;
 header{display:flex;align-items:center;gap:9px;padding:8px 14px;background:rgba(255,255,255,.93);
   backdrop-filter:blur(8px);border-bottom:1px solid var(--line);position:sticky;top:0;z-index:20}
 h1{font-size:15px;margin:0;letter-spacing:.05em;font-weight:600;color:var(--pinkD)}
-.ver{font-size:10.5px;color:var(--ink2);letter-spacing:.1em;margin-left:auto}
+.ver{font-size:10px;color:var(--ink2);letter-spacing:.08em;margin-left:auto;margin-right:2px}
+.newg{font-family:var(--maru);padding:8px 12px;border-radius:999px;border:1.5px solid var(--pinkL);
+  background:#fff;color:var(--pinkD);font-size:12px;font-weight:600;cursor:pointer;flex:none;white-space:nowrap}
 .ico{font-family:var(--maru);width:34px;height:34px;border-radius:50%;border:1px solid var(--line);
   background:#fff;color:var(--ink2);font-size:15px;cursor:pointer;flex:none}
 main{padding:0 13px;max-width:560px;margin:0 auto}
@@ -135,9 +137,9 @@ main{padding:0 13px;max-width:560px;margin:0 auto}
 <body>
 <header>
   <h1>ひらがじゃん たすけ</h1>
-  <span class="ver">v0.6</span>
+  <span class="ver">v0.7</span>
   <button class="ico" id="book" title="ずかん">📖</button>
-  <button class="ico" id="reset" title="はじめから">↺</button>
+  <button class="newg" id="reset">あたらしい ゲーム</button>
 </header>
 <main id="app"></main>
 <div class="foot" id="foot"></div>
@@ -10832,6 +10834,11 @@ const KB_SML=[["ゃ","ゅ","ょ","っ","ー"]];
 
 /* ===== じょうたい ===== */
 let phase="setup", hand=[], keeps=[], seen=[], kbmode="main", ana=null;
+const LSG="hiragajong_game";
+function saveGame(){try{localStorage.setItem(LSG,JSON.stringify({phase,hand,keeps,seen}))}catch(e){}}
+function loadGame(){try{const g=JSON.parse(localStorage.getItem(LSG)||"null");
+  if(g&&Array.isArray(g.hand)){phase=g.phase||"setup";hand=g.hand;keeps=g.keeps||[];seen=g.seen||[]}}catch(e){}}
+function newGame(){hand=[];keeps=[];seen=[];phase="setup";saveGame();close();render()}
 const $=id=>document.getElementById(id);
 const cnt=a=>{const p={};for(const c of a)p[c]=(p[c]||0)+1;return p};
 const sortHand=()=>hand.sort((a,b)=>ORD[a]-ORD[b]);
@@ -10990,6 +10997,7 @@ function kbGrid(pick){
 
 /* ===== がめん ===== */
 function render(){
+  saveGame();
   const app=$("app");app.innerHTML="";
   if(phase==="setup")return renderSetup(app);
   sortHand(); ana=analyze(); renderPlay(app); renderFoot();
@@ -11173,6 +11181,7 @@ function wordPeek(w){
 $("book").onclick=()=>{
   const n=Object.keys(USER).length;
   const s=sheetHead("ことばの ずかん", "アプリに "+Object.keys(DICT).length+"ご、じぶんで おしえたのが "+n+"ご");
+  s.appendChild(el("p","meta","おしえた いみと あそんで いる とちゅうの てはいは、この たんまつだけに のこるよ。ほかの スマホとは べつべつ。"));
   const a=el("div","acts");
   const ex=el("button","a2","おしえた ことばを かきだす");
   ex.onclick=()=>{const blob=new Blob([JSON.stringify(USER,null,1)],{type:"application/json"});
@@ -11187,8 +11196,15 @@ $("book").onclick=()=>{
   const c=el("button","a3","とじる");c.onclick=close;a.appendChild(c);
   s.appendChild(a);open_();
 };
-$("reset").onclick=()=>{if(hand.length+keeps.length===0||confirm("はじめから やりなおす？")){
-  hand=[];keeps=[];seen=[];phase="setup";close();render()}};
+$("reset").onclick=()=>{
+  if(hand.length+keeps.length===0){newGame();return}
+  const sh=sheetHead("あたらしい ゲームを はじめる？","いまの てはいと きめた ことばは きえちゃうよ");
+  const a=el("div","acts");
+  const y=el("button","a1","はじめる"); y.onclick=newGame; a.appendChild(y);
+  const n=el("button","a3","やめる"); n.onclick=close; a.appendChild(n);
+  sh.appendChild(a); open_();
+};
+loadGame();
 render();
 </script>
 </body>
