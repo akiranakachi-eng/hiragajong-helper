@@ -16,21 +16,21 @@
 }
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
 html,body{margin:0;padding:0}
-body{font-family:var(--maru);color:var(--ink);
+body{font-family:var(--maru);color:var(--ink);font-size:15px;
   background:linear-gradient(180deg,var(--bg) 0%,var(--bg2) 100%) fixed;
   min-height:100dvh;padding:0 0 92px;font-size:15px}
-header{display:flex;align-items:center;gap:9px;padding:11px 14px;background:rgba(255,255,255,.93);
+header{display:flex;align-items:center;gap:9px;padding:8px 14px;background:rgba(255,255,255,.93);
   backdrop-filter:blur(8px);border-bottom:1px solid var(--line);position:sticky;top:0;z-index:20}
-h1{font-size:15.5px;margin:0;letter-spacing:.05em;font-weight:600;color:var(--pinkD)}
+h1{font-size:15px;margin:0;letter-spacing:.05em;font-weight:600;color:var(--pinkD)}
 .ver{font-size:10.5px;color:var(--ink2);letter-spacing:.1em;margin-left:auto}
 .ico{font-family:var(--maru);width:34px;height:34px;border-radius:50%;border:1px solid var(--line);
   background:#fff;color:var(--ink2);font-size:15px;cursor:pointer;flex:none}
 main{padding:0 13px;max-width:560px;margin:0 auto}
-.card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:12px;
-  margin:0 0 11px;box-shadow:0 2px 10px rgba(200,140,170,.10)}
+.card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:10px 11px;
+  margin:0 0 8px;box-shadow:0 2px 10px rgba(200,140,170,.10)}
 .card.hi{border-color:var(--pinkL);background:linear-gradient(180deg,#fff,var(--pinkXL))}
 .card.win{border-color:var(--mintL);background:linear-gradient(180deg,#fff,var(--mintXL))}
-.card h3{margin:0 0 9px;font-size:12.5px;letter-spacing:.09em;color:var(--pinkD);font-weight:600;
+.card h3{margin:0 0 7px;font-size:12px;letter-spacing:.09em;color:var(--pinkD);font-weight:600;
   display:flex;align-items:center;gap:6px}
 .card h3 em{font-style:normal;color:var(--ink2);font-weight:400;letter-spacing:0;font-size:11.5px;margin-left:auto}
 
@@ -41,29 +41,35 @@ main{padding:0 13px;max-width:560px;margin:0 auto}
 .tile.gray{background:#F4EFF2;color:#BCACB6;border-color:#EBE0E7;box-shadow:none}
 
 /* てはい */
-.rack{display:flex;flex-wrap:wrap;gap:6px;align-items:flex-start}
-.rack .tile{width:34px;height:46px;font-size:22px}
-.rack .ph{width:34px;height:46px;border-radius:8px;border:1.5px dashed var(--pinkL);background:rgba(255,255,255,.5)}
-.grpw{display:flex;flex-direction:column;align-items:center;gap:3px}
+.rack{display:flex;flex-wrap:wrap;gap:5px;align-items:flex-start}
+.rack .tile{width:32px;height:42px;font-size:21px}
+.rack .ph{width:32px;height:42px;border-radius:8px;border:1.5px dashed var(--pinkL);background:rgba(255,255,255,.5)}
+.grpw{display:flex;flex-direction:column;align-items:center;gap:1px}
 .grpw .cap{font-size:9.5px;letter-spacing:.06em;color:var(--mint);font-weight:600}
 .grpw.meld .cap{color:var(--lilac)}
 .grp{display:flex;gap:2px;padding:4px;border-radius:10px;background:var(--mintXL);
   border:1.5px solid var(--mintL);cursor:pointer}
 .grpw.meld .grp{background:var(--lilacXL);border-color:var(--lilacL)}
-.grp .tile{width:30px;height:40px;font-size:20px;pointer-events:none;box-shadow:0 1px 0 #F7C9DB}
+.grp .tile{width:28px;height:37px;font-size:19px;pointer-events:none;box-shadow:0 1px 0 #F7C9DB}
 .sep{width:1px;align-self:stretch;background:var(--line);margin:0 2px}
 
-.bar{height:8px;border-radius:5px;background:var(--pinkXL);overflow:hidden;margin:11px 0 7px}
+.bar{height:7px;border-radius:4px;background:var(--pinkXL);overflow:hidden;margin:8px 0 5px}
 .bar i{display:block;height:100%;background:linear-gradient(90deg,var(--pinkL),var(--pink));border-radius:5px;transition:width .3s}
-.meta{font-size:12.5px;color:var(--ink2);line-height:1.7;margin:7px 0 0}
+.meta{font-size:12px;color:var(--ink2);line-height:1.6;margin:6px 0 0}
 .meta b{color:var(--pinkD);font-weight:600}
 
 /* こうほ（コンパクト） */
-.cands{display:flex;flex-wrap:wrap;gap:6px}
-.cand{font-family:var(--maru);padding:8px 13px;border-radius:999px;background:#fff;
-  border:1.5px solid var(--pinkL);color:var(--ink);font-size:16px;letter-spacing:.08em;cursor:pointer}
+.cands{display:flex;flex-wrap:wrap;gap:5px}
+.cand{font-family:var(--maru);padding:7px 12px;border-radius:999px;background:#fff;
+  border:1.5px solid var(--pinkL);color:var(--ink);font-size:15.5px;letter-spacing:.06em;cursor:pointer;
+  display:inline-flex;align-items:baseline;gap:1px}
 .cand.rec{background:var(--mintXL);border-color:var(--mintL)}
 .cand.nomean{color:var(--ink2);border-style:dashed}
+.cand b{color:var(--pink);font-weight:700}
+.cand i{font-style:normal;font-size:10px;color:var(--ink2);margin-left:5px;letter-spacing:0;opacity:.85}
+.cand.willwin{background:var(--mintXL);border-color:var(--mint)}
+.sub2{font-size:10.5px;letter-spacing:.13em;color:var(--ink2);margin:9px 0 5px}
+.sub2:first-of-type{margin-top:2px}
 .tin{font-family:var(--maru);width:100%;padding:13px;border-radius:13px;border:1.5px solid var(--pinkL);font-size:15px;color:var(--ink);background:#fff}
 .cand:active{transform:translateY(1px)}
 
@@ -83,7 +89,7 @@ main{padding:0 13px;max-width:560px;margin:0 auto}
 .foot{position:fixed;left:0;right:0;bottom:0;z-index:20;
   padding:9px 13px calc(9px + env(safe-area-inset-bottom));background:rgba(255,255,255,.95);
   backdrop-filter:blur(8px);border-top:1px solid var(--line);display:flex;gap:8px;max-width:560px;margin:0 auto}
-.foot button{font-family:var(--maru);flex:1;padding:15px 6px;border-radius:13px;border:none;
+.foot button{font-family:var(--maru);flex:1;padding:14px 6px;border-radius:13px;border:none;
   font-size:15px;font-weight:600;cursor:pointer;letter-spacing:.03em}
 .b1{background:var(--pink);color:#fff}
 .b2{background:#fff;color:var(--pinkD);border:1.5px solid var(--pinkL)}
@@ -122,14 +128,14 @@ main{padding:0 13px;max-width:560px;margin:0 auto}
 .big{text-align:center;padding:14px 8px 6px}
 .big .em{font-size:26px;color:var(--mint);font-weight:600;letter-spacing:.06em}
 .big p{margin:7px 0 0;font-size:13px;color:var(--ink2)}
-.note{font-size:11.5px;color:var(--ink2);line-height:1.7;margin:16px 0 0;padding-top:11px;border-top:1px solid var(--line)}
+.note{font-size:11px;color:var(--ink2);line-height:1.6;margin:12px 0 0;padding-top:9px;border-top:1px solid var(--line)}
 @media (prefers-reduced-motion:reduce){*{transition:none!important}}
 </style>
 </head>
 <body>
 <header>
   <h1>ひらがじゃん たすけ</h1>
-  <span class="ver">v0.5</span>
+  <span class="ver">v0.6</span>
   <button class="ico" id="book" title="ずかん">📖</button>
   <button class="ico" id="reset" title="はじめから">↺</button>
 </header>
@@ -10879,7 +10885,21 @@ function analyze(){
     wants.push({c,rest,win,n:ws.length,words:ws.slice(0,6)});
   }
   wants.sort((a,b)=>(b.win-a.win)||(b.n*b.rest-a.n*a.rest));
-  return{N,cover:cv,agari,make,rec,wants};
+  /* いろんな はいが ならぶように、1もじずつ かわりばんこで あつめる */
+  const per=wants.map(o=>({o,ws:(near[o.c]||[]).slice()
+    .sort((a,b)=>(hasMean(b)-hasMean(a))||(GRD[a]-GRD[b]))}));
+  const nexts=[]; let nextTotal=0;
+  for(const p of per) nextTotal+=p.ws.length;
+  for(let i=0,go=true;go&&nexts.length<28;i++){
+    go=false;
+    for(const p of per){
+      if(!p.ws[i])continue;
+      nexts.push({w:p.ws[i],c:p.o.c,rest:p.o.rest,win:p.o.win}); go=true;
+      if(nexts.length>=28)break;
+    }
+  }
+  nexts.sort((a,b)=>b.win-a.win);
+  return{N,cover:cv,agari,make,rec,wants,nexts,nextTotal};
 }
 function ponFor(c){
   const out=[],p={...cnt(hand)};p[c]=(p[c]||0)+1;
@@ -10907,15 +10927,22 @@ function sheetHead(title,sub){
 }
 
 /* ===== シート ===== */
-function wordSheet(w,kind,idx){
-  const s=sheetHead(kind?"きめた ことば":"この ことばに する？");
+function wordSheet(w,kind,idx,nx){
+  const s=sheetHead(kind?"きめた ことば":nx?"あと 1まいで できる":"この ことばに する？");
   s.appendChild(bigWord(w));
   const m=el("div","info");
   if(hasMean(w)) m.innerHTML=`<span class="w">いみ</span>　${meaning(w)}`;
   else m.innerHTML=`<span class="w">いみ</span>　まだ ずかんに のって いないよ。したで しらべて、おしえてね。`;
   s.appendChild(m);
+  if(nx){
+    const n=el("div","info");
+    n.innerHTML=nx.win
+      ? `<span class="w">${nx.c}</span>　これが くれば <b>あがり</b>！ やまと みんなの てに のこり <b>${nx.rest}まい</b>`
+      : `<span class="w">${nx.c}</span>　この はいが くれば つくれるよ。やまと みんなの てに のこり <b>${nx.rest}まい</b>`;
+    s.appendChild(n);
+  }
   const a=el("div","acts");
-  if(kind){
+  if(nx){ }else if(kind){
     const b=el("button","a1","くずす");
     b.onclick=()=>{if(keeps[idx].kind==="きめた"){hand=hand.concat([...w]);sortHand()}keeps.splice(idx,1);close();render()};
     a.appendChild(b);
@@ -11046,40 +11073,38 @@ function renderPlay(app){
 
   if(!ana.agari){
     const c2=el("div","card");
-    const h2=el("h3",null,"つくれる ことば");h2.appendChild(el("em",null,ana.make.length+"こ"));c2.appendChild(h2);
+    const h2=el("h3",null,"ことば");
+    h2.appendChild(el("em",null,`いま ${ana.make.length}こ ／ あと1まいで ${ana.nextTotal}こ`));
+    c2.appendChild(h2);
+
+    c2.appendChild(el("div","sub2","いま つくれる"));
     if(!ana.make.length){
-      c2.appendChild(el("p","meta","まだ ひとつも できて いないよ。したの「ほしい はい」を ねらおう。"));
+      c2.appendChild(el("p","meta","まだ ひとつも できて いないよ。"));
     }else{
       const cs=el("div","cands");
-      ana.make.slice(0,24).forEach(w=>{
+      ana.make.slice(0,20).forEach(w=>{
         const b=el("button","cand"+(ana.rec.has(w)?" rec":"")+(hasMean(w)?"":" nomean"),w);
         b.onclick=()=>wordSheet(w,null,-1);cs.appendChild(b)});
       c2.appendChild(cs);
-      c2.appendChild(el("p","meta","ことばを タップすると いみが みられて「きめる」も できるよ。みどりは のこすと よい ことば、うすい ことばは まだ ずかんに ないよ。"));
     }
-    app.appendChild(c2);
 
-    if(ana.wants.length){
-      const c3=el("div","card");
-      const h3=el("h3",null,"つぎに ほしい はい");h3.appendChild(el("em",null,ana.wants.length+"しゅるい"));c3.appendChild(h3);
-      const w=el("div","wait");
-      ana.wants.slice(0,16).forEach((o,i)=>{
-        const d=el("div","w1"+(o.win||i<3?" top":""));
-        d.appendChild(tileEl(o.c));
-        d.appendChild(el("span","cnt",o.win?"あがり!":"のこり"+o.rest));
-        d.onclick=()=>{
-          c3.querySelectorAll(".info").forEach(e=>e.remove());
-          const m=el("div","info");
-          m.innerHTML=`<span class="w">${o.c}</span>　これが くると <b>${o.n}この ことば</b>が つくれるよ：${o.words.join("・")}<br>やまと みんなの てに <b>のこり ${o.rest}まい</b>`;
-          c3.appendChild(m)};
-        w.appendChild(d)});
-      c3.appendChild(w);app.appendChild(c3);
-    }else if(!ana.make.length && keeps.some(k=>k.kind==="きめた")){
-      const c3=el("div","card hi");
-      c3.appendChild(el("h3",null,"いきどまり かも"));
-      c3.appendChild(el("p","meta","いまの かたちだと、どの はいが きても すすまないよ。うえの みどりの ことばを タップして「くずす」と、べつの みちが みつかるかも。"));
-      app.appendChild(c3);
+    if(ana.nexts.length){
+      c2.appendChild(el("div","sub2","あと 1まいで できる"));
+      const cs=el("div","cands");
+      ana.nexts.slice(0,24).forEach(o=>{
+        const b=el("button","cand"+(o.win?" willwin":"")+(hasMean(o.w)?"":" nomean"));
+        let used=false;
+        for(const ch of o.w){
+          if(ch===o.c&&!used){used=true;b.appendChild(el("b",null,ch))}
+          else b.appendChild(document.createTextNode(ch));
+        }
+        b.appendChild(el("i",null,o.win?"あがり":"のこり"+o.rest));
+        b.onclick=()=>wordSheet(o.w,null,-1,o);
+        cs.appendChild(b)});
+      c2.appendChild(cs);
     }
+    c2.appendChild(el("p","meta","タップで いみが みられるよ。みどりは のこすと よい ことば、ピンクの もじは まだ もって いない はい。"));
+    app.appendChild(c2);
   }
 
   if(seen.length){
