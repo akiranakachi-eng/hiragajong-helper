@@ -29,8 +29,8 @@ h1{font-size:14px;margin:0;letter-spacing:.02em;font-weight:600;color:var(--pink
 .ico{font-family:var(--maru);width:31px;height:31px;border-radius:50%;border:1px solid var(--line);
   background:#fff;color:var(--ink2);font-size:15px;cursor:pointer;flex:none}
 main{flex:1;min-width:0;min-height:0;overflow-y:auto;overflow-x:hidden;-webkit-overflow-scrolling:touch;
-  padding:9px 10px 16px;width:100%;max-width:560px;margin:0 auto}
-.card{background:var(--card);border:1px solid var(--line);border-radius:13px;padding:9px 10px;
+  padding:8px 8px 16px;width:100%;max-width:560px;margin:0 auto}
+.card{background:var(--card);border:1px solid var(--line);border-radius:13px;padding:9px 9px;
   margin:0 0 7px;max-width:100%;overflow:hidden;box-shadow:0 2px 10px rgba(200,140,170,.10)}
 .card.hi{border-color:var(--pinkL);background:linear-gradient(180deg,#fff,var(--pinkXL))}
 .card.drop{border:2px solid var(--pink);background:linear-gradient(180deg,#fff,var(--pinkXL));
@@ -38,8 +38,10 @@ main{flex:1;min-width:0;min-height:0;overflow-y:auto;overflow-x:hidden;-webkit-o
 .card.drop h3{font-size:13px;color:var(--pink);letter-spacing:.03em}
 .rack.dropping .grpw{opacity:.45}
 .rack.dropping>.tile{box-shadow:0 3px 0 #F1A9C4,0 4px 8px rgba(200,120,155,.24)}
-.tile.sug{border-color:var(--pink);background:linear-gradient(180deg,#fff,#FFE3EE)}
-.droprow{display:flex;align-items:center;gap:6px;flex-wrap:wrap;margin:9px 0 0;padding:8px 9px;
+.tile.sug{border-color:var(--pink);background:linear-gradient(180deg,#fff,#FFD9E7);box-shadow:0 3px 0 var(--pink),0 0 0 2px rgba(228,105,154,.2)}
+.tile.keepish{border-color:var(--mintL);background:linear-gradient(180deg,#fff,#E4F5EF);box-shadow:0 3px 0 #A8DDCD}
+.droprow .why{font-size:10.5px;color:var(--ink2);line-height:1.5;flex:1;min-width:120px}
+.droprow{display:flex;align-items:center;gap:6px;flex-wrap:wrap;max-width:100%;margin:9px 0 0;padding:8px 9px;
   border-radius:11px;background:#fff;border:1px dashed var(--pinkL)}
 .droprow .lb{font-size:11px;color:var(--pinkD);font-weight:600;letter-spacing:.04em}
 .wchip{display:inline-flex;align-items:center;gap:2px;padding:2px 5px 2px 2px;border-radius:8px;
@@ -62,16 +64,16 @@ main{flex:1;min-width:0;min-height:0;overflow-y:auto;overflow-x:hidden;-webkit-o
 .tile.gray{background:#F4EFF2;color:#BCACB6;border-color:#EBE0E7;box-shadow:none}
 
 /* てはい */
-.rack{display:flex;flex-wrap:wrap;gap:5px;align-items:flex-start;max-width:100%}
-.rack .tile{width:min(29px,7.2vw);height:min(38px,9.4vw);font-size:min(19px,4.8vw)}
-.rack .ph{width:min(29px,7.2vw);height:min(38px,9.4vw);border-radius:8px;border:1.5px dashed var(--pinkL);background:rgba(255,255,255,.5)}
+.rack{display:flex;flex-wrap:wrap;gap:4px;align-items:flex-start;max-width:100%}
+.rack .tile{width:min(27px,6.6vw);height:min(35px,8.6vw);font-size:min(18px,4.5vw)}
+.rack .ph{width:min(27px,6.6vw);height:min(35px,8.6vw);border-radius:8px;border:1.5px dashed var(--pinkL);background:rgba(255,255,255,.5)}
 .grpw{display:flex;flex-direction:column;align-items:center;gap:1px}
 .grpw .cap{font-size:9px;letter-spacing:.06em;color:var(--mint);font-weight:600}
 .grpw.meld .cap{color:var(--lilac)}
-.grp{display:flex;gap:2px;padding:4px;border-radius:10px;background:var(--mintXL);
+.grp{display:flex;gap:2px;padding:3px;border-radius:10px;background:var(--mintXL);
   border:1.5px solid var(--mintL);cursor:pointer}
 .grpw.meld .grp{background:var(--lilacXL);border-color:var(--lilacL)}
-.grp .tile{width:min(26px,6.4vw);height:min(34px,8.4vw);font-size:min(17.5px,4.4vw);pointer-events:none;box-shadow:0 1px 0 #F7C9DB}
+.grp .tile{width:min(23px,5.7vw);height:min(30px,7.5vw);font-size:min(16px,4vw);pointer-events:none;box-shadow:0 1px 0 #F7C9DB}
 .sep{width:1px;align-self:stretch;background:var(--line);margin:0 2px}
 
 .bar{height:7px;border-radius:4px;background:var(--pinkXL);overflow:hidden;margin:8px 0 5px}
@@ -97,7 +99,7 @@ main{flex:1;min-width:0;min-height:0;overflow-y:auto;overflow-x:hidden;-webkit-o
 .tin{font-family:var(--maru);width:100%;padding:12px;border-radius:13px;border:1.5px solid var(--pinkL);font-size:15px;color:var(--ink);background:#fff}
 .cand:active{transform:translateY(1px)}
 
-.wait{display:flex;flex-wrap:wrap;gap:6px}
+.wait{display:flex;flex-wrap:wrap;gap:6px;max-width:100%}
 .w1{display:flex;flex-direction:column;align-items:center;gap:2px;padding:4px 6px 3px;border-radius:9px;
   background:var(--mintXL);border:1.5px solid var(--mintL);cursor:pointer}
 .w1 .tile{width:30px;height:39px;font-size:20px;pointer-events:none}
@@ -107,7 +109,7 @@ main{flex:1;min-width:0;min-height:0;overflow-y:auto;overflow-x:hidden;-webkit-o
 .info{margin-top:8px;padding:9px 11px;border-radius:10px;background:var(--pinkXL);
   border-left:3px solid var(--pink);font-size:12.5px;line-height:1.7}
 .info .w{color:var(--pinkD);font-weight:600}
-.strip{display:flex;flex-wrap:wrap;gap:3px}
+.strip{display:flex;flex-wrap:wrap;gap:3px;max-width:100%}
 .strip .tile{width:22px;height:29px;font-size:14px}
 
 .foot{flex:none;min-width:0;z-index:20;padding:8px 10px calc(8px + env(safe-area-inset-bottom));
@@ -160,7 +162,7 @@ main{flex:1;min-width:0;min-height:0;overflow-y:auto;overflow-x:hidden;-webkit-o
 <body>
 <header>
   <h1>ひらがじゃん たすけ</h1>
-  <span class="ver">v1.4</span>
+  <span class="ver">v1.5</span>
   <button class="ico" id="book" title="ずかん">📖</button>
 </header>
 <main id="app"></main>
@@ -10951,23 +10953,27 @@ function analyze(){
       .sort((a,b)=>(hasMean(b.w)-hasMean(a.w))||(b.rest-a.rest)||(GRD[a.w]-GRD[b.w]))
       .slice(0,12);
   }
-  /* すてる ばん なら、どれを すてても いいか しらべる */
-  let drops=[];
+  /* すてる ばん：どの はいが つかえて いないかを しらべる */
+  let drops=[], keepSet=null;
   if(hand.length===N){
-    const useCnt={};
-    for(const c in near) for(const w of near[c]) for(const ch of new Set(w)) useCnt[ch]=(useCnt[ch]||0)+1;
+    keepSet=cnt(cv.words.join(""));          // いまの かたちで つかって いる はい
+    const use1={}, use2={};
+    for(const c in near) for(const w of near[c]) for(const ch of new Set(w)) use1[ch]=(use1[ch]||0)+1;
+    for(const o of far) for(const ch of new Set(o.w)) use2[ch]=(use2[ch]||0)+1;
     const uniq=[...new Set(hand)];
     for(const c of uniq){
       const rest=hand.slice(); rest.splice(rest.indexOf(c),1);
       const rp=cnt(rest);
       const r2=s2?ACT[2].filter(w=>fits(w,rp)):[], r3=s3?ACT[3].filter(w=>fits(w,rp)):[];
       const cvr=cover(psOf(rest),s2,s3,pick(r2,CAP2),pick(r3,CAP3));
-      drops.push({c,loss:cv.words.length-cvr.words.length,use:useCnt[c]||0,left:cvr.words.length});
+      const inCover=(keepSet[c]||0)>0;
+      const u1=use1[c]||0, u2=use2[c]||0;
+      drops.push({c,loss:cv.words.length-cvr.words.length,inCover,u1,u2,score:(inCover?1000:0)+(cv.words.length-cvr.words.length)*100+u1*10+u2});
     }
-    drops.sort((a,b)=>(a.loss-b.loss)||(a.use-b.use));
+    drops.sort((a,b)=>a.score-b.score);
   }
   const winTiles=wants.filter(o=>o.win);
-  return{N,cover:cv,agari,make,make3,make2,rec,wants,nexts3,nexts2,nextTotal,fars,winTiles,drops};
+  return{N,cover:cv,agari,make,make3,make2,rec,wants,nexts3,nexts2,nextTotal,fars,winTiles,drops,keepSet};
 }
 function ponFor(c){
   const out=[]; if(slots().s3<=0) return out;
@@ -11148,9 +11154,11 @@ function renderPlay(app){
     r.appendChild(wrap);
   });
   if(keeps.length&&hand.length)r.appendChild(el("div","sep"));
-  const sug=new Set(extra?ana.drops.slice(0,3).map(o=>o.c):[]);
+  const top=extra&&ana.drops.length?ana.drops[0]:null;
+  const useful=new Set();
+  if(extra) ana.drops.forEach(o=>{ if(o.inCover||o.u1>0) useful.add(o.c) });
   hand.forEach((ch,i)=>{
-    const b=tileEl(ch, extra&&sug.has(ch)?"sug":"");
+    const b=tileEl(ch, extra ? (top&&ch===top.c?"sug":(useful.has(ch)?"keepish":"")) : "");
     b.onclick=()=>{ if(extra){seen.push(ch);hand.splice(i,1);render()} else discardPeek(ch,i,c) };
     r.appendChild(b);
   });
@@ -11176,15 +11184,31 @@ function renderPlay(app){
     c.appendChild(wrow);
   }
   if(extra && ana.drops.length){
+    const o=ana.drops[0];
     const row=el("div","droprow");
-    row.appendChild(el("span","lb","すてても よさそう"));
-    ana.drops.slice(0,3).forEach(o=>{
-      const b=tileEl(o.c);
-      b.onclick=()=>{const i=hand.indexOf(o.c); if(i>=0){seen.push(o.c);hand.splice(i,1);render()}};
-      row.appendChild(b);
-      if(o.loss>0) row.appendChild(el("span","lb","（ことばが "+o.loss+"こ へる）"));
-    });
+    row.appendChild(el("span","lb","すてる なら"));
+    const b=tileEl(o.c);
+    b.onclick=()=>{const i=hand.indexOf(o.c); if(i>=0){seen.push(o.c);hand.splice(i,1);render()}};
+    row.appendChild(b);
+    let why;
+    if(o.inCover) why="どれも つかって いる はいだよ。これが いちばん もったいなく ないよ";
+    else if(o.loss>0) why="これでも ことばが "+o.loss+"こ へっちゃう";
+    else if(o.u1===0&&o.u2===0) why="どの ことばにも つかえて いないよ";
+    else if(o.u1===0) why="あと1まいの ことばには つかえて いないよ";
+    else why="つかえる ことばが いちばん すくないよ";
+    row.appendChild(el("span","why",why));
     c.appendChild(row);
+    const others=ana.drops.slice(1).filter(x=>!x.inCover&&x.loss===0&&x.u1===0);
+    if(others.length){
+      const r2=el("div","droprow");
+      r2.appendChild(el("span","lb","これも いいよ"));
+      others.slice(0,4).forEach(x=>{
+        const t=tileEl(x.c);
+        t.onclick=()=>{const i=hand.indexOf(x.c); if(i>=0){seen.push(x.c);hand.splice(i,1);render()}};
+        r2.appendChild(t)});
+      c.appendChild(r2);
+    }
+    c.appendChild(el("p","meta","みどりの はいは、ことばに つかえるから のこそう。"));
   }
   if(keeps.some(k=>k.draw>0)&&hand.length<N-1){
     const d=keeps.reduce((a,k)=>a+(k.draw||0),0);
