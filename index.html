@@ -10966,11 +10966,16 @@ function analyze(){
   return{N,cover:cv,agari,make,make3,make2,rec,wants,nexts3,nexts2,nextTotal,fars,winTiles,drops};
 }
 function ponFor(c){
-  const out=[],p={...cnt(hand)};p[c]=(p[c]||0)+1;
-  if(slots().s3>0)for(const L of[3,4,5])for(const w of ACT[L])
-    if(w.includes(c)&&fits(w,p))out.push({w,kind:L===3?"ポン":"カン"});
-  out.sort((a,b)=>(hasMean(b.w)-hasMean(a.w))||(GRD[a.w]-GRD[b.w]));
-  return out.slice(0,8);
+  const out=[]; if(slots().s3<=0) return out;
+  /* いまの かたちで つかって いない はい だけで つくれる ものを すすめる */
+  const free=hand.slice();
+  for(const w of (ana&&ana.cover?ana.cover.words:[])) for(const ch of w){
+    const i=free.indexOf(ch); if(i>=0)free.splice(i,1) }
+  const fp=cnt(free); fp[c]=(fp[c]||0)+1;
+  for(const L of[3,4,5]) for(const w of ACT[L])
+    if(w.includes(c)&&fits(w,fp)) out.push({w,kind:L===3?"ポン":"カン"});
+  out.sort((a,b)=>(hasMean(b.w)-hasMean(a.w))||(GRD[a.w]-GRD[b.w])||(b.w.length-a.w.length));
+  return out.slice(0,6);
 }
 
 /* ===== ぶひん ===== */
@@ -11240,7 +11245,8 @@ function discardPeek(ch,i,host){
   host.querySelectorAll(".info").forEach(e=>e.remove());
   const rest=hand.slice();rest.splice(i,1);
   const{s2,s3}=slots(),p=cnt(rest);
-  const cv=bestCover(p,s2,s3,BYLEN[2].filter(w=>fits(w,p)),BYLEN[3].filter(w=>fits(w,p)));
+  const cv=cover(psOf(rest),s2,s3,
+    pick(s2?ACT[2].filter(w=>fits(w,p)):[],CAP2), pick(s3?ACT[3].filter(w=>fits(w,p)):[],CAP3));
   const before=keeps.length+ana.cover.words.length, after=keeps.length+cv.words.length;
   const m=el("div","info");
   m.innerHTML=`<span class="w">${ch}</span>　これを すてても、ことばは <b>${after}こ</b> のままだよ。`;
@@ -11265,9 +11271,10 @@ function renderFoot(){
 }
 function afterDiscard(ch){
   const list=ponFor(ch);
-  const p2=cnt(hand.concat([ch])),{s2,s3}=slots();
-  const cv=bestCover(p2,s2,s3,BYLEN[2].filter(w=>fits(w,p2)),BYLEN[3].filter(w=>fits(w,p2)));
-  const ron=(hand.length+1===need()&&cv.cov===need());
+  const p2=cnt(hand.concat([ch])),{s2,s3}=slots(),N2=need();
+  const cv=cover(psOf(hand.concat([ch])),s2,s3,
+    pick(s2?ACT[2].filter(w=>fits(w,p2)):[],CAP2), pick(s3?ACT[3].filter(w=>fits(w,p2)):[],CAP3));
+  const ron=(hand.length+1===N2 && cv.cov===N2);
   if(!list.length&&!ron){seen.push(ch);close();render();return}
   const s=sheetHead(ron?"ロン できる！ 🎉":"ポン・カン できるよ","「"+ch+"」を つかうと この ことばが つくれるよ");
   list.forEach(o=>{
