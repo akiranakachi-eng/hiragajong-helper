@@ -1,0 +1,1452 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>ひらがじゃん たすけ</title>
+<style>
+:root{
+  --felt:#17513C; --felt2:#0F3A2B; --felt3:#0A2A1E;
+  --tile2:#E6DCC4; --edge:#C4B99B; --ink:#241F18;
+  --beni:#BE3A2E; --ai:#6FB6D6; --gold:#D8A742;
+  --maru:"Hiragino Maru Gothic ProN","ヒラギノ丸ゴ ProN W4","Yu Gothic Medium","游ゴシック Medium","YuGothic",sans-serif;
+}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;padding:0}
+body{
+  font-family:var(--maru); color:#EFEAD9;
+  background:
+    repeating-linear-gradient(90deg,rgba(0,0,0,.05) 0 2px,transparent 2px 4px),
+    repeating-linear-gradient(0deg,rgba(255,255,255,.03) 0 2px,transparent 2px 4px),
+    radial-gradient(120% 80% at 50% 0%,var(--felt) 0%,var(--felt2) 55%,var(--felt3) 100%);
+  background-attachment:fixed; min-height:100dvh; padding:0 0 40px;
+}
+header{
+  display:flex;align-items:baseline;gap:10px;padding:13px 16px 11px;
+  border-bottom:1px solid rgba(255,255,255,.12);position:sticky;top:0;z-index:5;
+  background:linear-gradient(180deg,rgba(10,42,30,.97),rgba(10,42,30,.85));backdrop-filter:blur(6px);
+}
+h1{font-size:16px;margin:0;letter-spacing:.06em;font-weight:600}
+.ver{font-size:11px;color:var(--gold);letter-spacing:.1em;margin-left:auto}
+main{padding:0 14px;max-width:560px;margin:0 auto}
+section{margin:16px 0}
+.lab{font-size:11px;letter-spacing:.18em;color:rgba(255,255,255,.55);margin:0 0 7px;display:flex;align-items:center;gap:8px}
+.lab::after{content:"";flex:1;height:1px;background:rgba(255,255,255,.14)}
+.chips{display:flex;gap:5px;flex-wrap:wrap}
+.chip{font-family:var(--maru);font-size:12.5px;padding:7px 12px;border-radius:999px;
+  border:1px solid rgba(255,255,255,.26);background:transparent;color:#EFEAD9;cursor:pointer}
+.chip[aria-pressed="true"]{background:var(--gold);border-color:var(--gold);color:#2A1F06;font-weight:600}
+.chip.sub[aria-pressed="true"]{background:var(--ai);border-color:var(--ai);color:#08222E}
+.chip:focus-visible{outline:2px solid var(--gold);outline-offset:2px}
+
+.tile{font-family:var(--maru);display:inline-flex;align-items:center;justify-content:center;
+  background:linear-gradient(180deg,#FCF8EE,#E9E0C9);color:var(--ink);border:none;border-radius:5px;
+  box-shadow:inset 0 -3px 0 var(--tile2),inset 0 0 0 1px var(--edge),0 2px 3px rgba(0,0,0,.4);cursor:pointer;padding:0}
+.tile:active{transform:translateY(1px)}
+.tile.blank{color:rgba(36,31,24,.2)}
+.tile.dim{background:linear-gradient(180deg,#CFC7B2,#B8B09A)}
+
+.rack{display:flex;flex-wrap:wrap;gap:4px;min-height:50px;align-content:flex-start;padding:7px;
+  border-radius:8px;background:rgba(0,0,0,.22);border:1px solid rgba(255,255,255,.1)}
+.rack.seen{background:rgba(0,0,0,.14);border-style:dashed;min-height:40px}
+.rack .tile{width:31px;height:42px;font-size:20px}
+.rack.seen .tile{width:25px;height:34px;font-size:16px}
+.rack .ph{width:31px;height:42px;border-radius:5px;border:1px dashed rgba(255,255,255,.2)}
+.rack .hint{font-size:12px;color:rgba(255,255,255,.4);align-self:center;padding:6px}
+.meta{font-size:12px;color:rgba(255,255,255,.65);margin:7px 2px 0;line-height:1.65}
+.meta b{color:var(--gold);font-weight:600}
+.warn{color:#F2B8B2}
+
+.kbtabs{display:flex;gap:4px;margin:11px 0 7px}
+.kbtabs .chip{font-size:11.5px;padding:6px 10px}
+.kb{display:grid;gap:3px}
+.kb .tile{aspect-ratio:3/4;width:100%;font-size:16px}
+.kb .tile[disabled]{opacity:.3;cursor:default;box-shadow:inset 0 0 0 1px rgba(255,255,255,.18);background:transparent;color:rgba(255,255,255,.4)}
+.kb .none{visibility:hidden}
+
+.btnrow{display:flex;gap:7px;margin-top:9px}
+button.act{font-family:var(--maru);flex:1;padding:12px 6px;border-radius:8px;border:none;
+  font-size:14.5px;font-weight:600;cursor:pointer;letter-spacing:.04em}
+button.act:focus-visible{outline:2px solid var(--gold);outline-offset:2px}
+.primary{background:var(--gold);color:#2A1F06}
+.ghost{background:transparent;color:rgba(255,255,255,.8);border:1px solid rgba(255,255,255,.28)}
+button.act[disabled]{opacity:.4;cursor:default}
+
+.card{background:rgba(0,0,0,.24);border:1px solid rgba(255,255,255,.12);border-radius:8px;padding:11px;margin-bottom:9px}
+.card h3{margin:0 0 8px;font-size:12.5px;letter-spacing:.1em;color:var(--gold);font-weight:600}
+.card h3 span{color:rgba(255,255,255,.5);letter-spacing:0;font-weight:400;margin-left:6px;font-size:11.5px}
+.bar{height:7px;border-radius:4px;background:rgba(255,255,255,.12);overflow:hidden;margin:3px 0 8px}
+.bar i{display:block;height:100%;background:linear-gradient(90deg,var(--gold),#F0C670)}
+.words{display:flex;flex-wrap:wrap;gap:6px}
+.word{display:flex;gap:2px;padding:4px 5px;border-radius:6px;background:rgba(255,255,255,.05);
+  border:1px solid rgba(255,255,255,.12);cursor:pointer}
+.word.pick{border-color:var(--gold);background:rgba(216,167,66,.14)}
+.word .tile{width:23px;height:31px;font-size:15px;pointer-events:none}
+.wait{display:flex;flex-wrap:wrap;gap:5px}
+.w1{display:flex;flex-direction:column;align-items:center;gap:2px;padding:4px 5px 3px;border-radius:6px;
+  background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.12);cursor:pointer}
+.w1 .tile{width:27px;height:36px;font-size:18px;pointer-events:none}
+.w1 .cnt{font-size:9.5px;color:var(--gold);letter-spacing:.03em;white-space:nowrap}
+.mean{margin-top:9px;padding:9px 11px;border-radius:7px;background:rgba(255,255,255,.07);
+  border-left:3px solid var(--gold);font-size:13.5px;line-height:1.75}
+.mean .w{color:var(--gold);font-weight:600}
+.mean a{display:inline-block;margin-top:6px;color:#BFE3F5;font-size:12.5px;text-decoration:none;
+  border-bottom:1px solid rgba(191,227,245,.45);padding-bottom:1px}
+.reveal{width:100%;padding:11px;border-radius:8px;border:1px solid var(--beni);background:rgba(190,58,46,.18);
+  color:#FFD9D4;font-family:var(--maru);font-size:14px;font-weight:600;cursor:pointer;margin-bottom:9px}
+.pon{display:flex;flex-wrap:wrap;gap:6px;margin-top:6px}
+.tag{font-size:10px;letter-spacing:.1em;padding:2px 6px;border-radius:4px;background:var(--beni);color:#fff;align-self:center}
+.tag.kan{background:var(--ai);color:#08222E}
+.note{font-size:11.5px;color:rgba(255,255,255,.45);line-height:1.7;margin-top:20px;padding-top:13px;border-top:1px solid rgba(255,255,255,.1)}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+</head>
+<body>
+<header><h1>ひらがじゃん たすけ</h1><span class="ver">v0.2</span></header>
+<main>
+  <section><p class="lab">たすけ</p><div class="chips" id="help"></div></section>
+  <section><p class="lab">とった くみ（ポン・カン）</p><div class="chips" id="meld"></div></section>
+
+  <section>
+    <div class="chips" id="modes" style="margin-bottom:7px"></div>
+    <div class="rack" id="rack"></div>
+    <p class="meta" id="info"></p>
+    <div id="seenwrap" style="margin-top:10px;display:none">
+      <p class="lab">みえた ひ（さいごの 1まいで ポン・カンを みます）</p>
+      <div class="rack seen" id="seen"></div>
+    </div>
+    <div class="kbtabs" id="kbtabs"></div>
+    <div class="kb" id="kb"></div>
+    <div class="btnrow">
+      <button class="act primary" id="find">こたえを さがす</button>
+      <button class="act ghost" id="deal">くばる</button>
+      <button class="act ghost" id="clear">けす</button>
+    </div>
+  </section>
+
+  <section id="out"></section>
+  <p class="note">ことば <b id="dn"></b>ご（うち いみつき <b id="dm"></b>ご）。牌は「あ〜ん（をを のぞく）」×2こ、だくおん・はんだくおん・ちいさい じ・のばすぼう ×1こずつ、ぜんぶで 120こ。</p>
+</main>
+
+<script>
+/* ========== じしょ ========== */
+const RAW = `あい|
+あいさつ|ひとに かける ことば
+あいす|つめたくて あまい おかし
+あいず|
+あいだ|ふたつの ものの なか
+あお|そらや うみの いろ
+あか|ちや ひの いろ
+あかとんぼ|
+あかり|
+あき|はっぱが あかく なる きせつ
+あきぞら|
+あご|くちの したの ぶぶん
+あさ|1にちの はじまり
+あさがお|なつの あさに さく はな
+あさひ|
+あし|あるく ための からだの ぶぶん
+あした|きょうの つぎの ひ
+あじ|したで かんじる もの
+あじつけ|あじを ととのえる こと
+あす|
+あずき|あんこに なる あかい まめ
+あせ|
+あたま|からだの いちばん うえ
+あたり|
+あつさ|どれくらい あついか
+あと|
+あな|むこうまで つきぬけた すきま
+あなた|
+あに|おにいさん
+あね|おねえさん
+あひる|
+あぶ|
+あぶら|ぬるぬるした りょうりに つかう もの
+あまがさ|
+あまさ|あまい あじ
+あまど|
+あみ|
+あめ|そらから ふる みず／くちで なめる あまい おかし
+あゆ|
+あゆみ|
+あらし|
+あり|つちの なかに すむ ちいさな むし
+ありんこ|ありの こと
+あわ|みずに できる まるい ふくらみ
+あんこ|
+あんしん|きが らくに なる きもち
+あんず|
+いえ|ひとが すむ たてもの
+いか|
+いき|
+いきもの|
+いくら|
+いけ|みずが たまった ところ
+いご|
+いし|かたくて ちいさな つちの かたまり
+いしころ|
+いす|すわる ための かぐ
+いた|
+いち|
+いちご|あかくて つぶつぶの ある くだもの
+いちじく|むらさきの あまい くだもの
+いちば|
+いっぽ|
+いと|ぬうときに つかう とても ほそい もの
+いとこ|
+いなか|
+いなずま|
+いぬ|「わん」と なく どうぶつ
+いね|
+いのち|いきて いる ちから
+いま|ちょうど この とき
+いも|つちの なかで そだつ たべもの
+いもうと|としが したの おんなの きょうだい
+いや|
+いりぐち|
+いるか|うみを およぐ かしこい いきもの
+いろ|あかや あおなどの みえかた
+いろがみ|
+いわ|とても おおきな いし
+いわし|むれで およぐ ちいさな さかな
+うえ|たかい ほう
+うお|
+うきわ|
+うぐいす|はるに 「ホーホケキョ」と なく とり
+うさぎ|
+うし|ぎゅうにゅうを だす どうぶつ
+うしろ|せなかの ほう
+うそ|
+うた|こえで めろでぃを つくる もの
+うたごえ|うたを うたう こえ
+うち|
+うちゅう|ほしが ひろがる せかい
+うちわ|
+うで|かたから てまでの ぶぶん
+うでどけい|
+うでわ|
+うどん|しろくて ふとい めんの りょうり
+うなぎ|
+うに|とげだらけの うみの いきもの
+うぶ|
+うま|はやく はしる おおきな どうぶつ
+うみ|しおの みずが ひろがる ところ
+うみべ|
+うめ|はるの はじめに さく はなの き
+うら|
+うらがわ|そとから みえない ほう
+うれしさ|うれしい きもち
+うわぎ|
+うわさばなし|
+うんどう|からだを うごかす こと
+うんどうかい|はしったり きそう ぎょうじ
+えいが|
+えがお|
+えき|でんしゃに のる ところ
+えさ|
+えだ|
+えだまめ|さやに はいった みどりの まめ
+えのぐ|
+えび|からを かぶった うみの いきもの
+えほん|えが たくさん ある ほん
+えり|
+えりまき|
+えん|
+えんそく|みんなで でかける ぎょうじ
+えんぴつ|かくための ほそながい どうぐ
+おいわい|よろこびを わかちあう こと
+おうち|
+おうふく|いって もどる こと
+おおきさ|どれくらい おおきいか
+おおぞら|
+おか|ゆるやかに もりあがった ちけい
+おかし|あまい たべもの
+おかね|ものを かう ときに つかう もの
+おかわり|もういちど もらう こと
+おき|
+おきゃく|たずねて きた ひと
+おく|
+おくば|くちの おくの は
+おこのみ|すきな ように する こと
+おしろ|
+おじぎ|
+おす|
+おたま|しるを すくう どうぐ
+おち|
+おちゃ|はっぱから つくる のみもの
+おてだま|
+おてつだい|ひとを たすける こと
+おてら|ほとけさまが いる たてもの
+おでん|
+おと|みみに きこえる もの
+おとうと|としが したの おとこの きょうだい
+おとこ|
+おとしもの|
+おとな|
+おどり|おんがくに あわせて からだを うごかす こと
+おどろき|びっくりする きもち
+おなか|からだの まえの したの ぶぶん
+おなじ|ちがいが ない こと
+おに|
+おにぎり|ごはんを にぎった たべもの
+おにごっこ|おにが みんなを おいかける あそび
+おはなし|ものがたり
+おひるね|ひるまに ねむる こと
+おび|
+おふろ|からだを あらう ところ
+おむらいす|たまごで つつんだ ごはん
+おもいで|むかしの できごとの きおく
+おもさ|どれくらい おもいか
+おもち|
+おもてがわ|そとから みえる ほう
+おや|
+おやこ|
+おやつ|ひるすぎに たべる かるい たべもの
+おやゆび|いちばん ふとい ゆび
+おり|
+おりがみ|
+おれ|
+おれい|ありがとうと つたえる こと
+おれんじ|みかんの いろ
+おわび|ごめんなさいと つたえる こと
+おわり|いちばん さいご
+おんな|
+かい|
+かいけつ|もんだいを なくす こと
+かいだん|のぼりおりする だんの みち
+かいもの|ものを かう こと
+かえる|みずべに すむ ぴょんと とぶ いきもの
+かお|めや くちが ある ところ
+かかし|
+かかと|あしの うしろの ぶぶん
+かがみ|じぶんの すがたが うつる もの
+かき|あきに たべる おれんじの くだもの
+かきごおり|
+かぎ|とびらを あけしめ する どうぐ
+かく|
+かくれんぼ|かくれて さがす あそび
+かけっこ|はしって きそう あそび
+かげ|ひかりが あたらない くらい ぶぶん
+かこ|
+かご|ものを いれる あみの いれもの
+かさ|あめの ひに さす どうぐ
+かじ|
+かず|いくつ あるかを あらわす もの
+かぜ|ふいて いる くうき／くしゃみや せきが でる びょうき
+かぞく|いっしょに くらす ひとたち
+かた|くびの りょうがわの ぶぶん
+かたさ|どれくらい かたいか
+かたち|ものの すがた
+かたつむり|
+かたづけ|ものを もとに もどす こと
+かたな|むかしの ぶきの はもの
+かたほう|ふたつのうち ひとつ
+かつお|うみを およぐ あおい さかな
+かどっこ|かどの ところ
+かなしみ|かなしい きもち
+かなづち|くぎを うつ どうぐ
+かに|よこに あるく うみの いきもの
+かね|
+かば|
+かばん|ものを いれて はこぶ もの
+かぶと|つのの ある くろい むし
+かぶとむし|
+かべ|へやを かこむ たいらな ぶぶん
+かぼちゃ|きいろくて かたい やさい
+かま|
+かみ|かいたり おったり する うすい もの
+かみなり|ゴロゴロと なって ひかる もの
+かみひこうき|
+かめ|こうらを せおって ゆっくり あるく
+かめら|しゃしんを とる どうぐ
+かも|みずに うかぶ とり
+かゆ|
+から|
+からあげ|あぶらで あげた とりにく
+からさ|からい あじ
+からす|まっくろで かしこい とり
+かるた|ふだを とる あそび
+かれー|からくて あまい ごはんの りょうり
+かわ|みずが ながれる ところ／どうぶつの ひょうめんの そざい
+かわら|
+かん|
+かんがえ|あたまで おもった ことがら
+かんさつ|よく みて しらべる こと
+かんしゃ|ありがたいと おもう きもち
+かんじ|
+かんせい|すっかり できあがる こと
+がっこう|べんきょうを する ところ
+がまん|こらえる こと
+きいろ|れもんや ばななの いろ
+きうい|ちゃいろい かわの みどりの くだもの
+きおく|おぼえて いる こと
+きかい|しごとを する そうち
+きく|あきに さく はな
+きし|
+きしゃ|
+きず|
+きせつ|
+きた|
+きたかぜ|
+きたぐに|きたの さむい ちいき
+きって|てがみに はる しるしの かみ
+きっぷ|のりものに のる ための ふだ
+きつね|しっぽの ふとい やまの どうぶつ
+きぬ|
+きのう|きょうの まえの ひ
+きのこ|かさの かたちの しょくぶつ
+きば|
+きぼう|こう なったら いいなと おもう こと
+きまり|まもる べき ことがら
+きみ|
+きめ|
+きもち|こころの ようす
+きゃべつ|はっぱが まるく かさなった やさい
+きゅうけい|やすむ こと
+きゅうり|みどりの ほそながい やさい
+きょう|この ひ
+きょうしつ|べんきょうを する へや
+きょり|ふたつの ばしょの あいだの ながさ
+きり|しろく けむった ような くうき
+きりかぶ|
+きろく|のこして おく かきもの
+きん|
+きんいろ|きらきら ひかる きいろい いろ
+きんぎょ|
+きんこ|
+きんちょう|どきどきする きもち
+ぎんいろ|きらきら ひかる しろい いろ
+くい|
+くうき|まわりに ある めに みえない もの
+くき|
+くぎ|ものを とめる ほそい かなぐ
+くさ|じめんに はえる みどりの しょくぶつ
+くさばな|
+くじ|
+くじゃく|はねを ひろげる きれいな とり
+くじら|
+くすり|びょうきを なおす ために のむ もの
+くず|
+くだもの|あまい きの み
+くち|たべたり はなしたり する ところ
+くっきー|さくさくした あまい おかし
+くつ|あしに はく もの
+くつした|
+くつばこ|
+くに|ひとが くらす おおきな まとまり
+くび|あたまと からだを つなぐ ところ
+くびわ|
+くふう|よく なるように かえて みる こと
+くま|もりに すむ おおきな どうぶつ
+くみ|
+くも|あしが 8ぽんの むし。すを はる
+くもり|そらが くもで おおわれた てんき
+くら|ものを しまう たてもの
+くらげ|すきとおって ふわふわ およぐ いきもの
+くり|とげの ある からに はいった きの み
+くるま|たいやで はしる のりもの
+くろ|よるの いろ
+くろばん|もじを かく くろい いた
+くろまめ|
+くん|
+ぐるーぷ|なかまの あつまり
+けい|
+けいかく|さきに きめる だんどり
+けいけん|じっさいに やった こと
+けいこ|
+けいさん|
+けいと|
+けが|からだを いためる こと
+けさ|
+けし|
+けしき|めの まえに ひろがる ながめ
+けしごむ|かいた ものを けす どうぐ
+けちゃっぷ|とまとの あかい ちょうみりょう
+けっか|さいごに なった ようす
+けむり|ものが もえた ときに でる もの
+けものみち|
+けん|
+けんか|
+けんきゅう|くわしく しらべる こと
+けーき|おいわいに たべる あまい おかし
+げんかん|いえの いりぐち
+げんき|からだの ちょうしが よい こと
+こあら|きに つかまって ねる どうぶつ
+こい|
+こいぬ|
+こいのぼり|
+こうえん|あそぶ ための ひろい ところ
+こうま|
+こえ|くちから でる おと
+こおり|みずが こおって かたく なった もの
+こけ|
+ここ|
+こころ|きもちが ある ところ
+こし|からだの まんなかの ぶぶん
+こたえ|といに たいする もの
+こたつ|
+こっぷ|のみものを いれる もの
+こと|
+ことし|この ねん
+ことば|きもちを つたえる おと や もじ
+こども|
+こな|
+こねこ|
+こぶ|
+こま|
+こむぎ|
+こめ|ごはんに なる しろい つぶ
+こもり|
+こや|
+こやま|
+こゆび|いちばん ほそい ゆび
+ころっけ|あげた まるい たべもの
+こんぶ|だしを とる うみの しょくぶつ
+こんろ|ひを つけて りょうりを する どうぐ
+ごはん|たいた こめ。しょくじ
+ごぼう|つちの なかの ほそながい やさい
+さいふ|
+さお|
+さか|かたむいた みち
+さかな|みずの なかを およぐ いきもの
+さかみち|
+さき|
+さくら|はるに ぴんくの はなが さく き
+さくらんぼ|あかくて ちいさな まるい くだもの
+さけ|
+さしみ|
+さじ|
+さっかー|あしで ぼーるを ける すぽーつ
+さと|
+さといも|
+さとう|あまい しろい つぶ
+さば|
+さばく|
+さら|りょうりを のせる たいらな もの
+さる|きのぼりが じょうずな どうぶつ
+さん|
+さんかく|かどが 3つ ある かたち
+さんど|はさんだ ぱんの たべもの
+さんぽ|
+さんま|あきに おいしい ほそい さかな
+ざいりょう|りょうりに つかう もの
+ざくろ|つぶが たくさん つまった くだもの
+ざせき|すわる ばしょ
+ざる|みずを きる あみの いれもの
+しあい|
+しあわせ|
+しお|しょっぱい しろい つぶ
+しおけ|しおの あじの つよさ
+しか|つのが ある もりの どうぶつ
+しかく|かどが 4つ ある かたち
+しき|
+しごと|はたらいて する こと
+しし|
+しずく|ちいさな みずの つぶ
+した|ひくい ほう
+しっぱい|うまく いかない こと
+しっぽ|
+しつもん|わからない ことを きく こと
+しばふ|
+しま|うみに かこまれた りく
+しまうま|
+しみ|
+しも|さむい あさに つく しろい こおり
+しゃしん|かめらで うつした え
+しゅくだい|いえで やる べんきょう
+しゅっぱつ|でかける こと
+しょうゆ|くろい ちょうみりょう
+しらす|とても ちいさな さかなの こ
+しらゆき|
+しり|
+しる|
+しろ|ゆきの いろ／むかしの おおきな たてもの
+しろくま|
+しん|
+しんごう|あか あお きいろで しらせる もの
+しんせつ|ひとに よく する こと
+しんぱい|きに なって おちつかない きもち
+しんぶん|
+じだい|ある ながい きかん
+じっけん|ためして たしかめる こと
+じてん|ことばの いみを しらべる ほん
+じてんしゃ|ぺだるを こいで すすむ のりもの
+じゅうしょ|すんでいる ばしょ
+じゅんばん|ならぶ ならびかた
+じゅんび|さきに ととのえる こと
+じゅーす|くだものの あまい のみもの
+すあし|
+すいえい|みずの なかを およぐ こと
+すいか|なつに たべる おおきな みどりの み
+すいそう|
+すいっち|きかいを つける ぼたん
+すいどう|みずが でる せつび
+すこし|わずかな りょう
+すし|さかなと ごはんの りょうり
+すじ|
+すず|
+すずめ|まちに いる ちいさな ちゃいろい とり
+すそ|
+すっぱさ|すっぱい あじ
+すな|とても こまかい つぶの つち
+すながわ|
+すぷーん|すくって たべる どうぐ
+すべりだい|すべって おりる ゆうぐ
+すみ|
+すみっこ|かどの おくの ところ
+すみれ|はるに さく むらさきの ちいさな はな
+すもう|
+すーぷ|あたたかい しるの りょうり
+ずかん|えで しらべる ほん
+せい|
+せいこう|うまく いく こと
+せいざ|
+せいと|
+せかい|
+せかいち|
+せき|
+せっけん|
+せつめい|わかるように つたえる こと
+せなか|からだの うしろがわ
+せみ|
+せん|ながく のびた すじ
+せんせい|おしえて くれる ひと
+せんたく|ふくを あらう こと
+せんぷうき|かぜを おこす きかい
+せんべい|こめで つくった かたい おかし
+せんろ|でんしゃが はしる みち
+ぜんぶ|のこらず すべて
+そうじ|きれいに する こと
+そうじき|ごみを すいとる きかい
+そうぞう|あたまの なかで えがく こと
+そうだん|ひとと はなして きめる こと
+そこ|
+そで|
+そと|そとがわ
+そとがわ|
+そば|ちゃいろい ほそい めんの りょうり
+そら|あたまの うえに ひろがる ところ
+そらいろ|
+そん|
+そーす|とんかつなどに かける ちょうみりょう
+たい|
+たいこ|たたいて おとを だす がっき
+たいそう|からだを うごかす うんどう
+たいふう|つよい かぜと あめが くる てんき
+たいやき|たいの かたちの あまい おかし
+たいよう|ひるに かがやく おおきな ほし
+たおる|からだを ふく ぬの
+たかさ|どれくらい たかいか
+たからもの|とても たいせつな もの
+たき|たかい ところから みずが おちる ところ
+たくさん|かずが おおい こと
+たくはい|にもつを とどける しくみ
+たけ|まっすぐ のびる みどりの しょくぶつ
+たけのこ|
+たこ|あしが 8ぽん ある うみの いきもの
+たたみ|
+たて|
+たてもの|ひとが つかう おおきな もの
+たに|やまと やまの あいだの ひくい ところ
+たにま|やまと やまの あいだ
+たぬき|おなかが まるい やまの どうぶつ
+たね|はなや やさいの もとに なる つぶ
+たのしさ|たのしい きもち
+たび|
+たま|
+たまご|とりが うむ しろい もの
+たまねぎ|かわを むくと なみだが でる やさい
+たら|
+たん|
+たんじょうび|うまれた ひの きねんび
+たんす|
+たんぼ|こめを そだてる ところ
+だいこん|しろくて おおきな やさい
+だいず|みそや とうふに なる まめ
+だいどころ|りょうりを する ところ
+だちょう|とても おおきくて はしる とり
+だんご|まるくて あまい おかし
+だんぼう|へやを あたためる しくみ
+ちいさな|
+ちえ|
+ちか|
+ちかく|きょりが みじかい ところ
+ちかてつ|
+ちから|ものを うごかす もと
+ちがい|おなじで ない ところ
+ちきゅう|わたしたちが すんで いる ほし
+ちしき|しって いる ことがら
+ちず|ばしょが わかる え
+ちち|おとうさん
+ちほう|ある ひろい ちいき
+ちゃ|
+ちゃいろ|つちの いろ
+ちゅうしゃ|くるまを とめる こと
+ちょうせん|むずかしい ことに いどむ こと
+ちょきん|おかねを ためる こと
+ちょこ|ちゃいろで あまい おかし
+ちり|
+ちん|
+つうがく|がっこうに かよう こと
+つえ|
+つき|よるの そらに でる まるいもの
+つきよ|
+つぎ|そのあとに くる もの
+つくえ|べんきょうを する だい
+つくりばなし|
+つち|じめんの すなや どろ
+つづき|そのあとに つづく ぶぶん
+つな|ふとい なわ
+つの|
+つば|
+つばき|ふゆに あかい はなが さく き
+つばさ|
+つばめ|はるに くる はやく とぶ とり
+つぼ|
+つま|
+つまさき|あしの さきの ぶぶん
+つみ|
+つみき|つみあげて あそぶ おもちゃ
+つめ|ゆびの さきの かたい ぶぶん
+つゆ|なつの まえに あめが つづく きせつ
+つゆぞら|
+つらら|こおりの ぼうが さがった もの
+つる|くびの ながい しろい とり
+てがみ|きもちを かいて おくる かみ
+てき|
+てじゅん|やる じゅんばん
+てすと|できるかを たしかめる もんだい
+てつ|
+てつぼう|
+てのひら|ての うちがわ
+てぶくろ|
+てま|
+てまえ|
+てら|
+てれび|えいぞうを みる きかい
+てん|とても ちいさな しるし
+てんき|
+てんし|
+てんとうむし|
+てんぷら|ころもを つけて あげた りょうり
+できあがり|かんせいした もの
+でんき|あかりや きかいを うごかす ちから
+でんしゃ|せんろの うえを はしる のりもの
+でんち|でんきを ためて おく もの
+でんとう|あかりを つける どうぐ
+でんわ|はなれた ひとと はなす どうぐ
+といれ|ようを たす ところ
+とう|
+とうちゃく|めざす ばしょに つく こと
+とうふ|だいずで つくった しろい たべもの
+とうもろこし|きいろい つぶの ならんだ やさい
+とおく|きょりが ながい ところ
+とかげ|しっぽの ながい ちいさな いきもの
+とき|じかんの ある いってん
+とくちょう|ほかと ちがう ところ
+とけい|じかんが わかる どうぐ
+とけいだい|
+とこ|
+とし|1ねんの ながさ。ねんれい
+とだち|
+とだな|
+とち|
+とちゅう|まだ おわって いない ところ
+となり|すぐ よこ
+とび|
+とびら|でいりする ための いた
+とまと|あかくて まるい やさい
+ともだち|なかよく する ひと
+とら|きいろに くろい しまの ある どうぶつ
+とり|そらを とぶ いきもの
+とりい|じんじゃの いりぐちの もん
+とりかご|
+とん|
+とんねる|やまや つちを ほった みち
+とんぼ|はねが 4まいの むし
+どりあ|やいた ごはんの りょうり
+どりょく|いっしょうけんめい やる こと
+なえ|
+なか|うちがわ
+なかま|いっしょに する ひとたち
+ながさ|どれくらい ながいか
+なし|しゃりしゃりした しろい くだもの
+なす|むらさきの やさい
+なっとう|だいずを はっこうさせた たべもの
+なつ|あつい きせつ
+なつやすみ|
+なな|
+なに|
+なのはな|
+なべ|りょうりを する いれもの
+なべもの|
+なま|
+なまえ|ひとや ものを よぶ ことば
+なみ|うみの みずの うごき
+なみだ|
+なら|
+なわ|
+なわとび|なわを とびこす あそび
+におい|はなで かんじる もの
+にかい|たてものの 2ばんめの かい
+にがさ|にがい あじ
+にく|どうぶつの たべられる ぶぶん
+にし|
+にしび|ゆうがたの たいようの ひかり
+にじ|あめの あと そらに でる 7いろの はし
+にじいろ|
+にもつ|はこぶ ための もの
+にもつだな|
+にもの|にて つくった りょうり
+にわ|いえの そとの すこしの ちめん
+にわとり|たまごを うむ とり
+にん|
+にんぎょう|
+にんじん|おれんじいろの ほそながい やさい
+ぬいぐるみ|
+ぬか|
+ぬの|ふくを つくる ひらたい そざい
+ぬま|
+ぬりえ|
+ねぎ|ながくて みどりの やさい
+ねこ|「にゃあ」と なく どうぶつ
+ねじ|
+ねずみ|
+ねだ|
+ねだん|
+ねっこ|
+ねつ|からだが あつく なる こと
+ねぶくろ|
+ねぼう|
+ねりもの|
+ねん|
+ねんど|
+のう|
+のこぎり|きを きる どうぐ
+のこり|あまって いる ぶん
+のこりもの|たべのこした もの
+のど|くびの まえの こえが でる ところ
+のはら|
+のはらみち|
+のぼりざか|
+のみ|
+のり|ものを くっつける どうぐ
+のりまき|のりで まいた たべもの
+のりもの|
+はい|
+はいいろ|しろと くろの あいだの いろ
+はか|
+はかり|おもさを はかる どうぐ
+はくちょう|
+はぐるま|ぎざぎざの まわる ぶひん
+はこ|ものを いれる いれもの
+はさみ|かみを きる どうぐ
+はし|かわの うえに かけた みち／ごはんを たべる ときに つかう 2ほんの ぼう
+はしら|
+はじまり|さいしょの ところ
+はじめ|いちばん さいしょ
+はた|
+はたけ|やさいを そだてる ところ
+はたけしごと|はたけの しごと
+はだ|からだの ひょうめん
+はち|はりを もつ むし。みつを あつめる
+はちみつ|
+はっけん|あたらしく みつける こと
+はっぱ|きや くさの みどりの ぶぶん
+はっぴょう|みんなの まえで つたえる こと
+はつめい|あたらしく つくりだす こと
+はと|まちで よく みる とり
+はな|きれいに さく しょくぶつ／においを かぐ ところ
+はなしあい|みんなで はなす こと
+はなたば|
+はなび|そらに あがる ひかりの ぎょうじ
+はなびら|
+はね|
+はは|おかあさん
+はば|
+はま|
+はやさ|どれくらい はやいか
+はやし|きが ならんで はえて いる ところ
+はり|
+はりがね|
+はりねずみ|
+はる|さくらが さく きせつ
+はれ|そらが あおい てんき
+はん|
+はんこ|
+はんたい|さかさまの こと
+はんだん|どちらか きめる こと
+はんばーぐ|ひきにくを やいた たべもの
+はんぶん|ふたつに わけた ひとつ
+ばいめん|ばいに した もの
+ばす|たくさん のれる おおきな くるま
+ばった|くさむらを とぶ みどりの むし
+ばなな|きいろくて ながい くだもの
+ばね|のびちぢみ する かなぐ
+ばら|とげの ある きれいな はな
+ぱいん|あまくて すっぱい みなみの くだもの
+ぱすた|いたりあの めん
+ぱそこん|けいさんや さぎょうを する きかい
+ぱん|こむぎで つくった たべもの
+ぱんだ|しろと くろの どうぶつ
+ひかり|あかるく てらす もの
+ひがし|たいようが のぼる ほうこう
+ひこうき|そらを とぶ のりもの
+ひざ|あしの まがる ところ
+ひじ|うでの まがる ところ
+ひたい|かおの うえの たいらな ぶぶん
+ひだり|みぎの はんたいの がわ／みぎの はんたい
+ひつじ|けが もこもこの どうぶつ
+ひと|
+ひとみ|
+ひなどり|
+ひなまつり|
+ひび|
+ひま|
+ひまわり|なつに さく おおきな きいろい はな
+ひみつ|
+ひも|ものを むすぶ ほそい もの
+ひやけ|
+ひやしうどん|
+ひょうしき|きまりを しらせる いた
+ひらがな|
+ひる|おひさまが でて いる あいだ
+ひれ|
+ひろさ|どれくらい ひろいか
+ひろば|ひろく ひらけた ばしょ
+びょういん|びょうきを なおす ところ
+びょうき|からだの ちょうしが わるい こと
+びわ|おれんじいろの ちいさな くだもの
+ぴざ|ひらたく やいた ぱんの りょうり
+ぴんく|ももの ような あかるい いろ
+ぴーまん|みどりで にがい やさい
+ふうせん|
+ふうとう|
+ふうりん|
+ふえ|ふいて おとを だす がっき
+ふく|からだに きる もの
+ふくろ|
+ふくろう|よるに うごく まるい かおの とり
+ふくわらい|
+ふし|
+ふた|
+ふで|
+ふでばこ|
+ふとん|ねる ときに つかう もの
+ふね|みずの うえを すすむ のりもの
+ふぶき|
+ふもと|
+ふゆ|さむい きせつ
+ふらいぱん|やく ための ひらたい なべ
+ふろ|
+ふん|
+ぶた|はなが まるい どうぶつ
+ぶどう|むらさきの つぶが たくさん ついた み
+ぶらんこ|ゆれて あそぶ ゆうぐ
+ぶんか|くらしの なかの ならわし
+ぷりん|やわらかくて あまい おかし
+ぷりんたー|かみに いんさつ する きかい
+ぷれぜんと|ひとに あげる おくりもの
+へいわ|
+へた|
+へちま|
+へび|
+へや|いえの なかの くぎられた ところ
+へやぎ|
+へん|
+ぺんぎん|こおりの うえを あるく とり
+ほう|
+ほうき|ゆかを はく そうじの どうぐ
+ほうこう|むいて いる むき
+ほうせき|
+ほうちょう|ざいりょうを きる はもの
+ほうほう|やりかた
+ほうれんそう|みどりの はっぱの やさい
+ほお|
+ほくろ|
+ほし|よるの そらに ひかる もの
+ほたる|よるに ひかる むし
+ほたるいか|
+ほっぺ|かおの よこの やわらかい ぶぶん
+ほね|
+ほのお|
+ほら|
+ほん|もじが かいてある よむ もの
+ほんだな|
+ぼうし|あたまに かぶる もの
+ぼうる|ざいりょうを まぜる まるい いれもの
+ぼくじょう|うしや うまを そだてる ところ
+ぼーる|なげたり けったり する まるい もの
+ぽすと|てがみを いれる はこ
+まいにち|ひが かわっても ずっと
+まえ|さきの ほう。むかし
+まえば|くちの まえの は
+まき|
+まきば|
+まく|
+まくら|ねる ときに あたまを のせる もの
+まぐろ|おおきくて はやい うみの さかな
+まご|
+まち|ひとが たくさん すむ ところ
+まちかど|まちの かどの ところ
+まつ|ふゆも みどりの はっぱの き
+まつげ|めの ふちの け
+まつり|みんなで にぎやかに あつまる ぎょうじ
+まと|
+まど|そとが みえる かべの あな
+まどぐち|うけつけを する ところ
+まないた|ざいりょうを きる ときの いた
+まほう|
+まめ|さやの なかに はいった ちいさな たね
+まめまき|
+まゆ|
+まゆげ|めの うえの け
+まよねーず|たまごの しろい ちょうみりょう
+まる|かどの ない かたち
+まわり|そのものの ぐるりの ぶぶん
+まん|
+まんごー|あまい みなみの くだもの
+まんなか|ちょうど まんなかの ところ／ちょうど なかの ところ
+みかづき|
+みかん|おれんじいろの すっぱい くだもの
+みき|
+みぎ|はしを もつ ほうの がわ
+みず|のむ ための すきとおった もの
+みずうみ|りくに かこまれた おおきな みず
+みずたま|
+みせ|ものを うる ところ
+みそ|だいずで つくった ちゃいろい ちょうみりょう
+みそしる|
+みぞ|ほそながく くぼんだ ところ
+みち|ひとや くるまが とおる ところ
+みどり|くさや はっぱの いろ
+みなと|ふねが とまる ところ
+みなみ|たいようが たかく なる ほうこう
+みなも|みずの ひょうめん
+みの|
+みほん|おてほんに なる もの
+みみ|おとを きく ところ
+みみず|つちの なかの ほそながい いきもの
+みや|
+みやこ|くにの ちゅうしんの まち
+みらい|
+むかい|まっすぐ むこうがわ
+むかし|ずっと まえの じだい
+むぎ|ぱんや めんに なる しょくぶつ
+むぎちゃ|
+むこ|
+むし|
+むしば|
+むしめがね|
+むすこ|
+むすめ|
+むね|からだの まえの うえの ぶぶん
+むら|ひとが すこし すむ ところ
+むらさき|ぶどうの いろ
+むり|
+めあて|めざす もくひょう
+めい|
+めいじん|
+めいろ|みちを たどって ぬける あそび
+めがね|
+めし|
+めじるし|
+めす|
+めだか|
+めろん|あまくて みどりの おおきな くだもの
+めん|
+もくば|
+もくひょう|めざす さき
+もぐら|
+もち|
+もと|
+もの|
+ものさし|ながさを はかる どうぐ
+もみじ|
+もも|まるくて あまい ぴんくの くだもの
+もやし|しろくて ほそい やさい
+もり|きが たくさん ある ところ
+もりのなか|
+もりもの|
+もん|
+もんだい|といや こまった ことがら
+やかた|おおきくて りっぱな いえ
+やかん|おゆを わかす どうぐ
+やきいも|やいた さつまいも
+やきざかな|
+やきそば|やいた めんの りょうり
+やきゅう|ぼーるを うって はしる すぽーつ
+やぎ|ひげの ある どうぶつ
+やく|
+やくそく|かならず まもると きめた こと
+やくわり|うけもつ しごと
+やさい|はたけで そだつ たべもの
+やさしさ|ひとを おもいやる こころ
+やど|
+やね|いえの いちばん うえの ぶぶん
+やねうら|やねの したの せまい へや
+やま|たかく もりあがった ところ／たかい ところ
+やまざと|
+やまびこ|
+やまみち|
+やり|
+やりかた|する ほうほう
+ゆうがた|ひが しずむ ころ
+ゆうき|こわくても やる ちから
+ゆうしょく|ゆうがたの しょくじ
+ゆうひ|
+ゆうびん|てがみを とどける しくみ
+ゆか|
+ゆかた|
+ゆき|ふゆに そらから ふる しろいもの
+ゆきだるま|
+ゆきやま|
+ゆげ|あついものから でる しろい けむり
+ゆず|
+ゆだん|きを ぬく こと
+ゆのみ|
+ゆび|ての さきの ほそながい ぶぶん
+ゆびわ|
+ゆめ|ねている ときに みる もの。ねがい
+ゆり|しろくて おおきな はな
+よあけ|
+ようかん|あずきで つくった かたい おかし
+ようき|
+ようふく|
+よこ|
+よこがお|
+よそ|
+よぞら|
+よる|くらく なって ねる じかん
+よろい|むかし たたかう ときに きた もの
+よん|
+らいおん|
+らく|
+らくだ|せなかに こぶが ある どうぶつ
+らっぱ|
+らん|
+らんどせる|きょうかしょを いれる かばん
+らーめん|しるに めんが はいった りょうり
+りかい|
+りく|
+りす|しっぽが ふさふさの ちいさな どうぶつ
+りゆう|なぜ そう なったかの わけ
+りょうほう|ふたつ とも
+りょうり|たべものを つくる こと
+りょかん|
+りょこう|とおくへ でかける こと
+りん|
+りんご|あかくて まるい くだもの
+るす|
+るすばん|
+れい|わかりやすく しめす もの
+れいぞうこ|たべものを ひやして おく はこ
+れきし|むかしから いままでの できごと
+れしぴ|りょうりの てじゅん
+れたす|さらだに つかう みどりの やさい
+れつ|
+れもん|きいろくて すっぱい くだもの
+れん|
+れんこん|あなの あいた しろい やさい
+れんしゅう|なんども やって うまく なる こと
+れんじ|ものを あたためる きかい
+ろうか|へやと へやを つなぐ ほそい みち
+ろうそく|
+ろく|
+ろけっと|うちゅうへ とんで いく のりもの
+ろじ|
+ろぼっと|じどうで うごく きかい
+わかめ|うみの みどりの しょくぶつ
+わけ|
+わざ|
+わし|つよい くちばしの おおきな とり
+わすれもの|
+わた|
+わたあめ|
+わたぼうし|
+わに|
+わら|
+わらびもち|
+わん|`;
+const DICT={}, BYLEN={2:[],3:[],4:[],5:[],6:[]};
+for(const line of RAW.split("\n")){
+  if(!line) continue;
+  const i=line.indexOf("|");
+  const w=line.slice(0,i), m=line.slice(i+1);
+  DICT[w]=m; if(BYLEN[w.length]) BYLEN[w.length].push(w);
+}
+dn.textContent=Object.keys(DICT).length;
+dm.textContent=Object.values(DICT).filter(Boolean).length;
+
+/* ========== はい ========== */
+const SEI="あいうえおかきくけこさしすせそたちつてとなにぬねのはひふへほまみむめもやゆよらりるれろわん";
+const DAK="がぎぐげござじずぜぞだぢづでどばびぶべぼ", HAN="ぱぴぷぺぽ", SML="ゃゅょっー";
+const INV={}; for(const c of SEI) INV[c]=2; for(const c of DAK+HAN+SML) INV[c]=1;
+const KB_MAIN=[
+ ["わ","ら","や","ま","は","な","た","さ","か","あ"],
+ ["","り","","み","ひ","に","ち","し","き","い"],
+ ["ん","る","ゆ","む","ふ","ぬ","つ","す","く","う"],
+ ["","れ","","め","へ","ね","て","せ","け","え"],
+ ["","ろ","よ","も","ほ","の","と","そ","こ","お"]];
+const KB_DAK=[["ば","だ","ざ","が"],["び","ぢ","じ","ぎ"],["ぶ","づ","ず","ぐ"],
+ ["べ","で","ぜ","げ"],["ぼ","ど","ぞ","ご"],["ぱ","ぴ","ぷ","ぺ"],["ぽ","","",""]];
+const KB_SML=[["ゃ","ゅ","ょ","っ","ー"]];
+
+/* ========== じょうたい ========== */
+let help=1, melds=0, hand=[], seen=[], mode="hand", kbmode="main", shown=false, last=null;
+
+/* ========== どうぐ ========== */
+const cnt=a=>{const p={};for(const c of a)p[c]=(p[c]||0)+1;return p};
+function fits(w,p){const c={};for(const ch of w){c[ch]=(c[ch]||0)+1;if(c[ch]>(p[ch]||0))return false}return true}
+function take(p,w){const q={...p};for(const ch of w)q[ch]--;return q}
+const needTiles=()=>2+3*(4-melds);
+
+/* いちばん たくさんの ひを ことばに できる くみあわせ */
+function bestCover(pool,n3,c2,c3){
+  let best={cov:0,words:[]};
+  (function dfs(p,used,start,acc,cov){
+    if(cov+ (n3-used)*3 + 2 <= best.cov) return;
+    if(cov>best.cov) best={cov,words:acc.slice()};
+    for(const w of c2){ if(fits(w,p) && cov+2>best.cov) best={cov:cov+2,words:acc.concat([w])}; }
+    if(used>=n3) return;
+    for(let k=start;k<c3.length;k++){
+      const w=c3[k]; if(!fits(w,p)) continue;
+      acc.push(w); dfs(take(p,w),used+1,k,acc,cov+3); acc.pop();
+    }
+  })(pool,0,0,[],0);
+  return best;
+}
+function analyze(chars){
+  const n3=4-melds, need=needTiles(), pool=cnt(chars);
+  const c2=BYLEN[2].filter(w=>fits(w,pool)), c3=BYLEN[3].filter(w=>fits(w,pool));
+  const cover=bestCover(pool,n3,c2,c3);
+  const agari=(chars.length===need && cover.cov===need);
+  // いま つくれる ことば（ぜんぶ）
+  const makeable=[...c3,...c2,...BYLEN[4].filter(w=>fits(w,pool)),...BYLEN[5].filter(w=>fits(w,pool))];
+  // つぎに ほしい ひ
+  const wants=[];
+  const seenAll=cnt(chars.concat(seen));
+  for(const c in INV){
+    const rest=INV[c]-(seenAll[c]||0);
+    if(rest<=0) continue;
+    const p2=cnt(chars.concat([c]));
+    const d2=BYLEN[2].filter(w=>fits(w,p2)), d3=BYLEN[3].filter(w=>fits(w,p2));
+    const cv=bestCover(p2,n3,d2,d3);
+    const gain=cv.cov-cover.cov;
+    if(gain>0){
+      const nw=[...d3,...d2].filter(w=>w.includes(c)).slice(0,8);
+      wants.push({c,rest,gain,cov:cv.cov,words:nw,full:cv.cov===need});
+    }
+  }
+  wants.sort((a,b)=> (b.full-a.full) || (b.cov-a.cov) || (b.rest*b.words.length-a.rest*a.words.length));
+  // ポン・カン
+  const pon=[];
+  const d=seen.length?seen[seen.length-1]:null;
+  if(d && melds<4){
+    for(const L of [3,4,5]){
+      for(const w of BYLEN[L]){
+        if(!w.includes(d)) continue;
+        const q={...pool}; q[d]=(q[d]||0)+1;
+        if(fits(w,q)) pon.push({w,kind:L===3?"ポン":"カン"});
+      }
+    }
+  }
+  return {need,cover,agari,makeable,wants,pon,discard:d};
+}
+
+/* ========== えがく ========== */
+function tile(ch,cls){const b=document.createElement("button");b.className="tile"+(cls?" "+cls:"");b.type="button";b.textContent=ch;return b}
+const HELPS=["ことばだけ","りゆうも","あいてを みる"];
+
+function chips(){
+  help_.innerHTML="";
+  HELPS.forEach((t,i)=>{const b=document.createElement("button");b.className="chip";b.type="button";b.textContent=t;
+    b.setAttribute("aria-pressed",help===i+1);b.onclick=()=>{help=i+1;chips();modesUI();render()};help_.appendChild(b)});
+  meld_.innerHTML="";
+  for(let i=0;i<=4;i++){const b=document.createElement("button");b.className="chip";b.type="button";b.textContent=i+"くみ";
+    b.setAttribute("aria-pressed",i===melds);b.onclick=()=>{melds=i;chips();render()};meld_.appendChild(b)}
+}
+function modesUI(){
+  const wrap=document.getElementById("modes"); wrap.innerHTML="";
+  document.getElementById("seenwrap").style.display = help>=3 ? "" : "none";
+  if(help<3){ mode="hand"; wrap.style.display="none"; return; }
+  wrap.style.display="flex";
+  [["hand","てはいを いれる"],["seen","みえた ひを いれる"]].forEach(([k,t])=>{
+    const b=document.createElement("button");b.className="chip sub";b.type="button";b.textContent=t;
+    b.setAttribute("aria-pressed",mode===k);b.onclick=()=>{mode=k;modesUI();drawKb()};wrap.appendChild(b)});
+}
+function drawKb(){
+  const tabs=document.getElementById("kbtabs"); tabs.innerHTML="";
+  [["main","せいおん"],["dak","だくおん"],["sml","ちいさい じ"]].forEach(([k,t])=>{
+    const b=document.createElement("button");b.className="chip";b.type="button";b.textContent=t;
+    b.setAttribute("aria-pressed",k===kbmode);b.onclick=()=>{kbmode=k;drawKb()};tabs.appendChild(b)});
+  const kb=document.getElementById("kb");
+  const rows=kbmode==="main"?KB_MAIN:kbmode==="dak"?KB_DAK:KB_SML;
+  kb.style.gridTemplateColumns=`repeat(${rows[0].length},1fr)`;
+  kb.style.maxWidth = kbmode==="main" ? "" : "230px";
+  kb.innerHTML="";
+  const used=cnt(hand.concat(seen));
+  rows.forEach(r=>r.forEach(ch=>{
+    if(!ch){const d=document.createElement("div");d.className="none";kb.appendChild(d);return}
+    const b=tile(ch);
+    const left=INV[ch]-(used[ch]||0);
+    if(left<=0 || (mode==="hand" && hand.length>=needTiles())) b.disabled=true;
+    b.onclick=()=>{ (mode==="hand"?hand:seen).push(ch); drawKb(); render() };
+    kb.appendChild(b);
+  }));
+}
+function render(){
+  const need=needTiles();
+  const rack=document.getElementById("rack"); rack.innerHTML="";
+  hand.forEach((ch,i)=>{const b=tile(ch);b.onclick=()=>{hand.splice(i,1);drawKb();render()};rack.appendChild(b)});
+  for(let i=hand.length;i<need;i++){const d=document.createElement("div");d.className="ph";rack.appendChild(d)}
+  const sr=document.getElementById("seen"); sr.innerHTML="";
+  if(!seen.length){const s=document.createElement("span");s.className="hint";s.textContent="すてられた ひを おすと ここに はいります";sr.appendChild(s)}
+  seen.forEach((ch,i)=>{const b=tile(ch,i===seen.length-1?"":"dim");b.onclick=()=>{seen.splice(i,1);drawKb();render()};sr.appendChild(b)});
+  let msg=`てはい <b>${hand.length}</b> / あがりは <b>${need}</b>まい`;
+  if(melds>0) msg+=`（ポン・カン ${melds}くみ ぶん）`;
+  if(hand.length>need) msg=`<span class="warn">おおすぎます（${hand.length} / ${need}）</span>`;
+  document.getElementById("info").innerHTML=msg;
+  document.getElementById("find").disabled = hand.length<2 || hand.length>need;
+  if(last) draw();
+}
+function deal(){
+  const wall=[]; for(const c in INV) for(let i=0;i<INV[c];i++) wall.push(c);
+  for(let i=wall.length-1;i>0;i--){const j=Math.random()*(i+1)|0;[wall[i],wall[j]]=[wall[j],wall[i]]}
+  hand=wall.slice(0,needTiles()-1); seen=[]; last=null; shown=false;
+  document.getElementById("out").innerHTML=""; drawKb(); render();
+}
+
+function mask(w){ return shown ? w : "○".repeat(w.length) }
+function wordEl(w,box,pick){
+  const d=document.createElement("div"); d.className="word"+(pick?" pick":"");
+  for(const ch of mask(w)) d.appendChild(tile(ch,ch==="○"?"blank":""));
+  if(shown) d.onclick=()=>meanEl(w,box);
+  return d;
+}
+function meanEl(w,box){
+  box.querySelectorAll(".mean").forEach(e=>e.remove());
+  const m=document.createElement("div"); m.className="mean";
+  const p=document.createElement("div");
+  p.innerHTML=`<span class="w">${w}</span>　${DICT[w] || "（いみは まだ はいって いません）"}`;
+  m.appendChild(p);
+  const a=document.createElement("a");
+  a.href="https://kids.yahoo.co.jp/search?p="+encodeURIComponent(w+" とは");
+  a.target="_blank"; a.rel="noopener"; a.textContent="もっと しらべる（Yahoo!きっず）";
+  m.appendChild(a); box.appendChild(m);
+}
+function card(title,sub){
+  const c=document.createElement("div"); c.className="card";
+  const h=document.createElement("h3"); h.textContent=title;
+  if(sub){const s=document.createElement("span");s.textContent=sub;h.appendChild(s)}
+  c.appendChild(h); return c;
+}
+function draw(){
+  const out=document.getElementById("out"); out.innerHTML="";
+  if(!last) return;
+  const r=last;
+
+  if(!shown){
+    const b=document.createElement("button"); b.className="reveal"; b.textContent="こたえを みる";
+    b.onclick=()=>{shown=true;draw()}; out.appendChild(b);
+  }
+
+  if(r.agari){
+    const c=card("あがれる！");
+    const ws=document.createElement("div"); ws.className="words";
+    r.cover.words.forEach(w=>ws.appendChild(wordEl(w,c,true)));
+    c.appendChild(ws); out.appendChild(c);
+  }
+
+  if(help>=2){
+    const c=card("いまの すすみぐあい");
+    const bar=document.createElement("div"); bar.className="bar";
+    const i=document.createElement("i"); i.style.width=Math.round(r.cover.cov/r.need*100)+"%";
+    bar.appendChild(i); c.appendChild(bar);
+    const p=document.createElement("p"); p.className="meta"; p.style.margin="0";
+    p.innerHTML=`ことばに なった ひは <b>${r.cover.cov}</b> / ${r.need}まい。のこり <b>${r.need-r.cover.cov}</b>まいを かえよう。`;
+    c.appendChild(p); out.appendChild(c);
+  }
+
+  if(!r.agari){
+    const c=card("いま つくれる ことば", r.makeable.length+"こ");
+    if(!r.makeable.length){
+      const p=document.createElement("p"); p.className="meta"; p.style.margin="0";
+      p.textContent="まだ ひとつも できて いないよ。したの「ほしい ひ」を ねらって みよう。";
+      c.appendChild(p);
+    }else{
+      const ws=document.createElement("div"); ws.className="words";
+      const keep=new Set(r.cover.words);
+      r.makeable.slice(0,14).forEach(w=>ws.appendChild(wordEl(w,c,keep.has(w))));
+      c.appendChild(ws);
+      if(help>=2 && r.cover.words.length){
+        const p=document.createElement("p"); p.className="meta";
+        p.innerHTML="きいろい わくは、いま <b>のこして おくと よい</b> ことばだよ。";
+        c.appendChild(p);
+      }
+    }
+    out.appendChild(c);
+  }
+
+  if(r.wants.length){
+    const c=card("つぎに ほしい ひ", help>=2 ? r.wants.length+"しゅるい" : "");
+    const w=document.createElement("div"); w.className="wait";
+    r.wants.slice(0,help>=2?18:10).forEach(o=>{
+      const d=document.createElement("div"); d.className="w1";
+      d.appendChild(tile(shown?o.c:"○", shown?"":"blank"));
+      if(help>=2){
+        const s=document.createElement("span"); s.className="cnt";
+        s.textContent = o.full ? "あがり!" : "のこり"+o.rest;
+        d.appendChild(s);
+      }
+      if(shown) d.onclick=()=>{
+        c.querySelectorAll(".mean").forEach(e=>e.remove());
+        const m=document.createElement("div"); m.className="mean";
+        m.innerHTML=`<span class="w">${o.c}</span>　これが くると：${o.words.join("・")||"かたちが すすむ"}`
+          + (help>=2 ? `<br>やまと みんなの てに のこり <b>${o.rest}</b>まい` : "");
+        c.appendChild(m);
+      };
+      w.appendChild(d);
+    });
+    c.appendChild(w); out.appendChild(c);
+  }
+
+  if(help>=3){
+    const c=card("あいての すてはい", r.discard ? "「"+r.discard+"」" : "みえた ひを いれてね");
+    if(!r.discard){
+      const p=document.createElement("p");p.className="meta";p.style.margin="0";
+      p.textContent="うえの「みえた ひを いれる」に して、あいてが すてた ひを おしてね。";
+      c.appendChild(p);
+    }else if(!r.pon.length){
+      const p=document.createElement("p");p.className="meta";p.style.margin="0";
+      p.textContent="この ひでは ポンも カンも できないよ。";
+      c.appendChild(p);
+    }else{
+      r.pon.slice(0,10).forEach(o=>{
+        const row=document.createElement("div"); row.className="pon";
+        const t=document.createElement("span"); t.className="tag"+(o.kind==="カン"?" kan":""); t.textContent=o.kind;
+        row.appendChild(t); row.appendChild(wordEl(o.w,c,true)); c.appendChild(row);
+      });
+      const p=document.createElement("p");p.className="meta";
+      p.innerHTML="ポン・カンを したら、うえの「とった くみ」を <b>1つ ふやして</b> ね。";
+      c.appendChild(p);
+    }
+    out.appendChild(c);
+  }
+}
+
+/* ========== そうさ ========== */
+document.getElementById("find").onclick=()=>{
+  shown=false; last=analyze(hand.slice()); draw();
+  const o=document.getElementById("out"); if(o.scrollIntoView) o.scrollIntoView({behavior:"smooth",block:"start"});
+};
+document.getElementById("deal").onclick=deal;
+document.getElementById("clear").onclick=()=>{
+  hand=[];seen=[];last=null;shown=false;document.getElementById("out").innerHTML="";drawKb();render();
+};
+const help_=document.getElementById("help"), meld_=document.getElementById("meld");
+chips(); modesUI(); drawKb(); render();
+</script>
+</body>
+</html>
