@@ -42,14 +42,18 @@ main{flex:1;min-width:0;min-height:0;overflow-y:auto;overflow-x:hidden;-webkit-o
 .droprow{display:flex;align-items:center;gap:6px;flex-wrap:wrap;margin:9px 0 0;padding:8px 9px;
   border-radius:11px;background:#fff;border:1px dashed var(--pinkL)}
 .droprow .lb{font-size:11px;color:var(--pinkD);font-weight:600;letter-spacing:.04em}
-.droprow .tile{width:31px;height:41px;font-size:20px}
+.wchip{display:inline-flex;align-items:center;gap:2px;padding:2px 5px 2px 2px;border-radius:8px;
+  background:var(--mintXL);border:1.5px solid var(--mintL);cursor:pointer}
+.wchip .tile{width:min(23px,5.6vw);height:min(30px,7.4vw);font-size:min(16px,4vw);pointer-events:none;box-shadow:0 1px 0 #F7C9DB}
+.wchip i{font-style:normal;font-size:9.5px;color:var(--mint);font-weight:700}
+.droprow .tile{width:min(31px,7.6vw);height:min(41px,10vw);font-size:min(20px,5vw)}
 .hint{flex:1;display:flex;align-items:center;justify-content:center;gap:5px;padding:12px 5px;
   border-radius:12px;background:var(--pinkXL);color:var(--pinkD);font-size:13.5px;font-weight:600}
 .card.win{border-color:var(--mintL);background:linear-gradient(180deg,#fff,var(--mintXL))}
 .card h3{margin:0 0 6px;font-size:11.5px;letter-spacing:.06em;color:var(--pinkD);font-weight:600;
-  display:flex;align-items:baseline;gap:6px;min-width:0;white-space:nowrap}
+  display:flex;align-items:baseline;gap:6px;min-width:0;flex-wrap:wrap}
 .card h3 em{font-style:normal;color:var(--ink2);font-weight:400;letter-spacing:0;font-size:10.5px;
-  margin-left:auto;min-width:0;overflow:hidden;text-overflow:ellipsis}
+  margin-left:auto;min-width:0;white-space:nowrap}
 
 .tile{font-family:var(--maru);display:inline-flex;align-items:center;justify-content:center;
   background:linear-gradient(180deg,#fff,#FFF3F7);color:var(--ink);border:1px solid #F5CEDF;border-radius:8px;
@@ -59,15 +63,15 @@ main{flex:1;min-width:0;min-height:0;overflow-y:auto;overflow-x:hidden;-webkit-o
 
 /* てはい */
 .rack{display:flex;flex-wrap:wrap;gap:5px;align-items:flex-start;max-width:100%}
-.rack .tile{width:29px;height:38px;font-size:19px}
-.rack .ph{width:29px;height:38px;border-radius:8px;border:1.5px dashed var(--pinkL);background:rgba(255,255,255,.5)}
+.rack .tile{width:min(29px,7.2vw);height:min(38px,9.4vw);font-size:min(19px,4.8vw)}
+.rack .ph{width:min(29px,7.2vw);height:min(38px,9.4vw);border-radius:8px;border:1.5px dashed var(--pinkL);background:rgba(255,255,255,.5)}
 .grpw{display:flex;flex-direction:column;align-items:center;gap:1px}
 .grpw .cap{font-size:9px;letter-spacing:.06em;color:var(--mint);font-weight:600}
 .grpw.meld .cap{color:var(--lilac)}
 .grp{display:flex;gap:2px;padding:4px;border-radius:10px;background:var(--mintXL);
   border:1.5px solid var(--mintL);cursor:pointer}
 .grpw.meld .grp{background:var(--lilacXL);border-color:var(--lilacL)}
-.grp .tile{width:26px;height:34px;font-size:17.5px;pointer-events:none;box-shadow:0 1px 0 #F7C9DB}
+.grp .tile{width:min(26px,6.4vw);height:min(34px,8.4vw);font-size:min(17.5px,4.4vw);pointer-events:none;box-shadow:0 1px 0 #F7C9DB}
 .sep{width:1px;align-self:stretch;background:var(--line);margin:0 2px}
 
 .bar{height:7px;border-radius:4px;background:var(--pinkXL);overflow:hidden;margin:8px 0 5px}
@@ -156,7 +160,7 @@ main{flex:1;min-width:0;min-height:0;overflow-y:auto;overflow-x:hidden;-webkit-o
 <body>
 <header>
   <h1>ひらがじゃん たすけ</h1>
-  <span class="ver">v1.3</span>
+  <span class="ver">v1.4</span>
   <button class="ico" id="book" title="ずかん">📖</button>
 </header>
 <main id="app"></main>
@@ -11160,6 +11164,17 @@ function renderPlay(app){
     ? `ことばは <b>${done}こ</b> できて いるよ。いらない はいを タップして すてよう。`
     : `5つの ことばの うち <b>${done}こ</b> できたよ。あと <b>${5-done}こ</b>！`;
   c.appendChild(p);
+  if(!extra && ana.winTiles.length){
+    const wrow=el("div","droprow");
+    wrow.appendChild(el("span","lb","あと1まい！"));
+    ana.winTiles.slice(0,14).forEach(o=>{
+      const ch=el("button","wchip");ch.type="button";
+      ch.appendChild(tileEl(o.c));
+      ch.appendChild(el("i",null,o.rest));
+      ch.onclick=()=>winSheet(o);
+      wrow.appendChild(ch)});
+    c.appendChild(wrow);
+  }
   if(extra && ana.drops.length){
     const row=el("div","droprow");
     row.appendChild(el("span","lb","すてても よさそう"));
@@ -11181,7 +11196,7 @@ function renderPlay(app){
     const {s2,s3}=slots();
     const c2=el("div","card");
     const h2=el("h3",null,"ことば");
-    h2.appendChild(el("em",null,`いま ${ana.make.length} ／ あと1まい ${ana.nextTotal}`));
+    h2.appendChild(el("em",null,`${ana.make.length} ／ ${ana.nextTotal}`));
     c2.appendChild(h2);
     const mark=(b,w)=>{ if(!hasMean(w))b.appendChild(el("u",null,"?")); return b };
     const pill=w=>{const b=el("button","cand"+(ana.rec.has(w)?" rec":"")+(hasMean(w)?"":" nomean"),w);
@@ -11196,19 +11211,6 @@ function renderPlay(app){
     const group=(label,nodes)=>{ if(!nodes.length)return;
       c2.appendChild(el("div","sub2",label));
       const cs=el("div","cands"); nodes.forEach(n=>cs.appendChild(n)); c2.appendChild(cs) };
-
-    /* あがり：ことばでは なく「まちの はい」を ならべる */
-    if(ana.winTiles.length){
-      c2.appendChild(el("div","sub2","この はいが くれば あがり！"));
-      const w=el("div","wait");
-      ana.winTiles.forEach(o=>{
-        const dd=el("div","w1");
-        dd.appendChild(tileEl(o.c));
-        dd.appendChild(el("span","cnt","のこり"+o.rest));
-        dd.onclick=()=>winSheet(o);
-        w.appendChild(dd)});
-      c2.appendChild(w);
-    }
 
     const oth3=ana.nexts3.filter(o=>!o.win), oth2=ana.nexts2.filter(o=>!o.win);
     const L=(a,b)=>expand?a:b;
