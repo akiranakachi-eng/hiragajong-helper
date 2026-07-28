@@ -166,7 +166,7 @@ main{flex:1 1 auto;min-width:0;min-height:0;overflow-y:auto;overflow-x:hidden;-w
 <body>
 <header>
   <h1>ひらがじゃん たすけ</h1>
-  <span class="ver">v2.2</span>
+  <span class="ver">v2.3</span>
   <button class="ico" id="book" title="ずかん">📖</button>
 </header>
 <main><div class="inner" id="app"></div></main>
@@ -11066,21 +11066,52 @@ function afterDiscard(ch){
     pick(s2?ACT[2].filter(w=>fits(w,p2)):[],CAP2), pick(s3?ACT[3].filter(w=>fits(w,p2)):[],CAP3));
   const ron=(hand.length+1===N2 && cv.cov===N2);
   if(!list.length&&!ron){seen.push(ch);close();render();return}
-  const s=sheetHead(ron?"ロン できる！ 🎉":"ポン・カン できるよ","「"+ch+"」を つかうと この ことばが つくれるよ");
+
+  /* ロンできる ときは、ポンでは なく あがりを だす */
+  if(ron){
+    const s=sheetHead("ロン できる！ 🎉","「"+ch+"」で あがれるよ");
+    const bw=el("div","bigword"); bw.appendChild(tileEl(ch)); s.appendChild(bw);
+    s.appendChild(el("div","sub2","これで ぜんぶ そろうよ"));
+    if(keeps.length){
+      const kw=el("div","cands"); kw.style.marginBottom="8px";
+      keeps.forEach(k=>kw.appendChild(el("button","cand rec",k.w)));
+      s.appendChild(el("div","wdesc","きめた ことば:")); s.appendChild(kw);
+    }
+    cv.words.forEach(w=>{
+      const box=el("div","info");
+      const t=el("div","wtop"); let used=false;
+      for(const c2 of w){ if(c2===ch&&!used){used=true;t.appendChild(el("b",null,c2))}
+        else t.appendChild(document.createTextNode(c2)) }
+      box.appendChild(t);
+      box.appendChild(el("div","wdesc", hasMean(w)?meaning(w):"まだ ずかんに ない ことば"));
+      s.appendChild(box);
+    });
+    const a2=el("div","acts");
+    const y=el("button","a1","ロンする！ 🎉");
+    y.onclick=()=>{ hand.push(ch); close(); render() };
+    a2.appendChild(y);
+    const no=el("button","a3","なにも しない");
+    no.onclick=()=>{seen.push(ch);close();render()};
+    a2.appendChild(no);
+    s.appendChild(a2); open_(); return;
+  }
+
+  const s=sheetHead("ポン・カン できるよ","「"+ch+"」を つかうと この ことばが つくれるよ");
   list.forEach(o=>{
     const row=el("div","wrow");
     row.appendChild(el("span","tag"+(o.kind==="カン"?" kan":""),o.kind));
-    const b=el("button","cand rec",o.w);b.style.flex="1";b.onclick=()=>wordPeek(o.w);
-    row.appendChild(b);
+    const b2=el("button","cand rec",o.w);b2.style.flex="1";b2.onclick=()=>wordPeek(o.w);
+    row.appendChild(b2);
     const g=el("button","pill",o.kind+"する");
     g.onclick=()=>{const rest=[...o.w];rest.splice(rest.indexOf(ch),1);
       for(const c2 of rest){const i=hand.indexOf(c2);if(i>=0)hand.splice(i,1)}
       keeps.push({w:o.w,kind:o.kind,draw:o.kind==="カン"?o.w.length-3:0});close();render()};
     row.appendChild(g);s.appendChild(row);
   });
-  const a=el("div","acts");
-  const no=el("button","a2","なにも しない");no.onclick=()=>{seen.push(ch);close();render()};
-  a.appendChild(no);s.appendChild(a);open_();
+  const a3=el("div","acts");
+  const no2=el("button","a2","なにも しない");
+  no2.onclick=()=>{seen.push(ch);close();render()};
+  a3.appendChild(no2);s.appendChild(a3);open_();
 }
 function wordPeek(w){
   const s=$("sheet");s.querySelectorAll(".info").forEach(e=>e.remove());
