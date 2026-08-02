@@ -59,6 +59,9 @@ main{flex:1 1 auto;min-width:0;min-height:0;overflow-y:auto;overflow-x:hidden;-w
 .card.win{border-color:var(--mintL);background:linear-gradient(180deg,#fff,var(--mintXL))}
 .card h3{margin:0 0 6px;font-size:11.5px;letter-spacing:.06em;color:var(--pinkD);font-weight:600;
   display:flex;align-items:baseline;gap:6px;min-width:0;flex-wrap:wrap}
+.fixb{font-family:var(--maru);margin-left:auto;padding:4px 9px;border-radius:999px;border:1px solid var(--pinkL);
+  background:#fff;color:var(--pinkD);font-size:10.5px;font-weight:600;cursor:pointer;flex:none}
+.fixb+em{margin-left:6px}
 .card h3 em{font-style:normal;color:var(--ink2);font-weight:400;letter-spacing:0;font-size:10.5px;
   margin-left:auto;min-width:0;white-space:nowrap}
 
@@ -166,7 +169,7 @@ main{flex:1 1 auto;min-width:0;min-height:0;overflow-y:auto;overflow-x:hidden;-w
 <body>
 <header>
   <h1>ひらがじゃん たすけ</h1>
-  <span class="ver">v2.3</span>
+  <span class="ver">v2.4</span>
   <button class="ico" id="book" title="ずかん">📖</button>
 </header>
 <main><div class="inner" id="app"></div></main>
@@ -10853,14 +10856,16 @@ function render(){
 }
 function renderSetup(app){
   const N=need();
-  const c=el("div","card hi");
-  c.appendChild(el("h3",null,"くばられた はいを いれよう"));
+  const c=el("div","card "+(hand.length>=N-1?"win":"hi"));
+  c.appendChild(el("h3",null, hand.length>=N-1?"これで あって いる？":"くばられた はいを いれよう"));
   const r=el("div","rack");
   hand.forEach((ch,i)=>{const b=tileEl(ch);b.onclick=()=>{hand.splice(i,1);render()};r.appendChild(b)});
   for(let i=hand.length;i<N-1;i++)r.appendChild(el("div","ph"));
   c.appendChild(r);
   const p=el("p","meta");
-  p.innerHTML=`あと <b>${Math.max(0,N-1-hand.length)}</b>まい。したの はいを おしてね（まちがえたら うえの はいを タップ）`;
+  p.innerHTML = hand.length>=N-1
+    ? `<b>${hand.length}まい</b> そろったよ。まちがいが なければ したの ボタンを おしてね（なおす ときは うえの はいを タップ）`
+    : `あと <b>${Math.max(0,N-1-hand.length)}</b>まい。したの はいを おしてね（まちがえたら うえの はいを タップ）`;
   c.appendChild(p);app.appendChild(c);
   const k=el("div","card");
   const t=el("div","tabs");
@@ -10868,10 +10873,13 @@ function renderSetup(app){
     const b=el("button","tab",x);b.type="button";b.setAttribute("aria-pressed",m===kbmode);
     b.onclick=()=>{kbmode=m;render()};t.appendChild(b)});
   k.appendChild(t);
-  k.appendChild(kbGrid(ch=>{hand.push(ch);if(hand.length>=N-1)phase="play";render()}));
+  k.appendChild(kbGrid(ch=>{hand.push(ch);render();
+    if(hand.length>=N-1){const b=$("foot").querySelector(".b1"); if(b&&b.scrollIntoView)b.scrollIntoView({block:"nearest"})}
+  }));
   app.appendChild(k);
   const f=$("foot");f.innerHTML="";
-  if(hand.length>=2){const b=el("button","b1","これで はじめる");b.onclick=()=>{phase="play";render()};f.appendChild(b)}
+  if(hand.length>=2){const b=el("button","b1", hand.length>=N-1?"これで OK":"これで はじめる");
+    b.onclick=()=>{phase="play";render()};f.appendChild(b)}
   const d=el("button","b2","テスト：くばる");
   d.onclick=()=>{const wall=[];for(const c2 in INV)for(let i=0;i<INV[c2];i++)wall.push(c2);
     for(let i=wall.length-1;i>0;i--){const j=Math.random()*(i+1)|0;[wall[i],wall[j]]=[wall[j],wall[i]]}
@@ -10896,6 +10904,11 @@ function renderPlay(app){
   /* てはい（きめた ことばも ここに ならぶ） */
   const c=el("div","card"+(extra?" drop":""));
   const h=el("h3",null, extra?"👆 すてる はいを えらぼう":"てはい");
+  if(!extra && !ana.agari){
+    const fx=el("button","fixb","✎ なおす");
+    fx.onclick=()=>{ phase="setup"; render() };
+    h.appendChild(fx);
+  }
   h.appendChild(el("em",null,`${hand.length+keeps.reduce((a,k)=>a+k.w.length,0)}まい`));
   c.appendChild(h);
   const r=el("div","rack"+(extra?" dropping":""));
